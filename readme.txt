@@ -1,12 +1,11 @@
-QAdmin - Administration Plugin
-Copyright QMM Team 2005
-http://www.q3mm.org/
-
-QAdmin is an administrative plugin for Quake 3-based games and mods. Commands are spread out over numerous
-access levels for better distribution of powers to users.
+QADMIN_QMM - Server Administration Plugin
+Copyright 2004-2024
+https://github.com/thecybermind/nocrash_qmm/
+3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson a.k.a. CyberMind <kevinm@planetquake.com>
+    Kevin Masterson < cybermind@gmail.com >
+
 
 Win32 Installation:
 	1. Install QMM

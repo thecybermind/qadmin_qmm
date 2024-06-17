@@ -1,9 +1,10 @@
-QADMIN_QMM - QMM plugin
-Copyright QMM Team 2004
-http://www.quake3mm.net/
+QADMIN_QMM - Server Administration Plugin
+Copyright 2004-2024
+https://github.com/thecybermind/nocrash_qmm/
+3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson a.k.a. CyberMind <cybermind@users.sourceforge.net>
+    Kevin Masterson < cybermind@gmail.com >
 
 CHANGE LOG
 Version: 1.2.3 (03/08/06)
