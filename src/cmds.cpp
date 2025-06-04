@@ -27,7 +27,7 @@ void reload() {
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s\n", QMM_GETSTRCVAR("admin_config_file")));
 
 	// grab new default access value
-	g_defaultAccess = QMM_GETINTCVAR("admin_default_access");
+	g_defaultAccess = (int)QMM_GETINTCVAR("admin_default_access");
 
 	// reassign default access
 	for (int i = 0; i < MAX_CLIENTS; ++i) {
@@ -107,7 +107,11 @@ int handlecommand(int clientnum, int cmdnum) {
 			}
 
 			// if client doesn't have access, give warning message
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+			g_syscall(G_CPRINTF, ENT_FROM_NUM(clientnum), QMM_VARARGS("print \"[QADMIN] You do not have access to that command: '%s'\n\"", command));
+#else
 			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"[QADMIN] You do not have access to that command: '%s'\n\"", command));
+#endif
 			QMM_RET_SUPERCEDE(1);
 		}
 
@@ -336,7 +340,7 @@ int admin_ban(int clientnum, int datanum, int access) {
 		if (!immunity) {
 			g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip %s \"%s\"\n", g_playerinfo[slotid].ip, message));
 			ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Banned %s by IP (%s): '%s'\n", g_playerinfo[slotid].name, g_playerinfo[slotid].ip, message));
-			g_syscall(G_DROP_CLIENT, slotid, message);
+			KickClient(slotid, message);
 		}
 
 		// else at least 1 user with immunity has the given IP
@@ -351,7 +355,7 @@ int admin_ban(int clientnum, int datanum, int access) {
 		while (finduser != -1) {
 			// if this user does not have immunity, kick him
 			if (!has_access(finduser, ACCESS_IMMUNITY))
-				g_syscall(G_DROP_CLIENT, finduser, message);
+				KickClient(finduser, message);
 
 			// get next user with IP
 			finduser = user_with_ip(g_playerinfo[slotid].ip, finduser);
@@ -393,7 +397,7 @@ int admin_ban(int clientnum, int datanum, int access) {
 		while (finduser != -1) {
 			// if this user does not have immunity, kick him
 			if (!has_access(finduser, ACCESS_IMMUNITY))
-				g_syscall(G_DROP_CLIENT, finduser, message);
+				KickClient(finduser, message);
 
 			// get next user with IP
 			finduser = user_with_ip(user, finduser);
@@ -497,7 +501,11 @@ int admin_chat(int clientnum, int datanum, int access) {
 }
 
 int admin_csay(int clientnum, int datanum, int access) {
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+	g_syscall(G_CPRINTF, ENT_FROM_NUM(clientnum), PRINT_HIGH, "%s", concatargs(datanum));
+#else
 	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS("cp \"%s\n\"", concatargs(datanum)));
+#endif
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -527,6 +535,7 @@ int admin_psay(int clientnum, int datanum, int access) {
 }
 
 int admin_listmaps(int clientnum, int datanum, int access) {
+#ifndef GAME_NO_FS_GETFILELIST
 	char dirlist[MAX_STRING_LENGTH];
 	char* dirptr = dirlist;
 
@@ -539,7 +548,7 @@ int admin_listmaps(int clientnum, int datanum, int access) {
 	}
 	ClientPrint(clientnum, dirlist);
 	ClientPrint(clientnum, "\n[QADMIN] End of maps list\n");
-
+#endif
 	QMM_RET_SUPERCEDE(1);
 }
 
@@ -574,7 +583,7 @@ int admin_kick(int clientnum, int datanum, int access) {
 		message = "Kicked by Admin";
 	
 	ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Kicked %s: '%s'\n", g_playerinfo[slotid].name, message));
-	g_syscall(G_DROP_CLIENT, slotid, message);
+	KickClient(slotid, message);
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -586,7 +595,7 @@ int admin_reload(int clientnum, int datanum, int access) {
 }
 
 int admin_userlist(int clientnum, int datanum, int access) {
-	int argc = g_syscall(G_ARGC) - datanum + 1;
+	intptr_t argc = g_syscall(G_ARGC) - datanum + 1;
 	char name[MAX_NAME_LENGTH];
 
 	int banaccess = has_access(clientnum, LEVEL_256);
@@ -703,7 +712,7 @@ int admin_currentmap(int clientnum, int datanum, int access) {
 }
 
 int admin_timeleft(int clientnum, int datanum, int access) {
-	int timelimit = g_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, "timelimit");
+	intptr_t timelimit = g_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, "timelimit");
 	if (!timelimit) {
 		ClientPrint(datanum > 0 ? clientnum : -1, "[QADMIN] There is no time limit.\n");
 		QMM_RETURN(datanum > 0 ? QMM_SUPERCEDE : QMM_IGNORED, 1);
@@ -732,7 +741,7 @@ int admin_vote_map(int clientnum, int datanum, int access) {
 	static char map[MAX_QPATH] = "";
 
 	QMM_ARGV(datanum, map, sizeof(map));
-	intptr_t time = QMM_GETINTCVAR("admin_vote_map_time");
+	int time = (int)QMM_GETINTCVAR("admin_vote_map_time");
 
 	if (!is_valid_map(map)) {
 		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Unknown map '%s'\n", map));
@@ -748,7 +757,7 @@ int admin_vote_map(int clientnum, int datanum, int access) {
 }
 
 void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
-	int slotid = (intptr_t)param;
+	int slotid = (int)(intptr_t)param;
 	
 	// user may have authed and gotten immunity during the vote,
 	// but don't mention it, just make the vote fail
@@ -757,7 +766,7 @@ void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
 
 	if (winner == 1 && winvotes) {
 		ClientPrint(-1, QMM_VARARGS("[QADMIN] Vote to kick %s was successful\n", g_playerinfo[slotid].name));
-		g_syscall(G_DROP_CLIENT, slotid, "Kicked due to vote.");
+		KickClient(slotid, "Kicked due to vote.");
 	} else {
 		ClientPrint(-1, QMM_VARARGS("[QADMIN] Vote to kick %s has failed\n", g_playerinfo[slotid].name));
 	}
@@ -766,7 +775,7 @@ void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
 int admin_vote_kick(int clientnum, int datanum, int access) {
 	char user[MAX_NAME_LENGTH];
 	int slotid;
-	int time = g_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, "admin_vote_kick_time");
+	int time = (int)QMM_GETINTCVAR("admin_vote_kick_time");
 
 	QMM_ARGV(datanum, user, sizeof(user));
 	slotid = namematch(user);
@@ -806,7 +815,7 @@ int say(int clientnum, int datanum, int access) {
 
 	char command[MAX_COMMAND_LENGTH];
 
-	int argcount = g_syscall(G_ARGC) - 1;
+	int argcount = (int)g_syscall(G_ARGC) - 1;
 
 	int temp = 0;
 	
@@ -816,6 +825,7 @@ int say(int clientnum, int datanum, int access) {
 	if (g_syscall(G_ARGC) <= 2) {
 		char** args = tok_parse(command);
 		strncpy(command, args[0], sizeof(command));
+		command[sizeof(command) - 1] = '\0';
 		for (argcount = 0; args[argcount]; ++argcount);
 		tok_free(args);
 		temp = 1;

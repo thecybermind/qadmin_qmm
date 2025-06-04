@@ -94,13 +94,16 @@ typedef struct userinfo_s {
 } userinfo_t;
 #define usertype(x) (x==au_ip?"IP":(x==au_name?"name":"ID"))
 
+extern gentity_t* g_gents;
+extern int g_gentsize;
+
 extern userinfo_t g_userinfo[];
 extern intptr_t g_maxuserinfo;
 
-extern intptr_t g_defaultAccess;
+extern int g_defaultAccess;
 
 extern time_t g_mapstart;
-extern intptr_t g_levelTime;
+extern int g_levelTime;
 
 extern char** g_gaggedCmds;
 

@@ -16,6 +16,7 @@ bool has_access(int, int);
 int user_with_ip(const char*, int = -1);
 int arrsize(admincmd_t*);
 void ClientPrint(int, const char*, bool = 0);
+void KickClient(int, const char*);
 char* concatargs(int);
 char** tok_parse(const char*, char = ' ');
 void tok_free(char**);
@@ -25,6 +26,6 @@ const char* lcase(const char*);
 int namematch(const char*, bool = 0, int = -1);
 bool is_valid_map(const char*);
 
-qboolean Info_Validate(const char*);
+bool InfoString_Validate(const char*);
 
 #endif // __QADMIN_QMM_UTIL_H__

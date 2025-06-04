@@ -18,6 +18,7 @@ Created By:
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "main.h"
 #include "util.h"
 
@@ -37,6 +38,7 @@ bool has_access(int clientnum, int reqaccess) {
 	return ((g_playerinfo[clientnum].access & reqaccess) == reqaccess);
 }
 
+
 // returns the first slot id with given ip starting after the slot id specified in 'start_after'
 int user_with_ip(const char* ip, int start_after) {
 	for (int i = start_after + 1; i < MAX_CLIENTS; ++i) {
@@ -47,32 +49,43 @@ int user_with_ip(const char* ip, int start_after) {
 	return -1;
 }
 
+
 int arrsize(admincmd_t* arr) {
 	int i;
 	for (i = 0; arr[i].cmd && arr[i].func; ++i);
 	return i;
 }
 
-void ClientPrint(int clientnum, const char* msg, bool chat) {
-	// remove any QMM_VARARGS() conflicts by making a temp string
-	static char temp[MAX_STRING_LENGTH];
-	strncpy(temp, msg, MAX_STRING_LENGTH);
-	msg = (const char*)temp;
 
+void ClientPrint(int clientnum, const char* msg, bool chat) {
 	if (clientnum == SERVER_CONSOLE)
 		g_syscall(G_PRINT, msg);
 	else {
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+		g_syscall(G_CPRINTF, ENT_FROM_NUM(clientnum), PRINT_HIGH, "%s", msg);
+#else
 		if (chat)
 			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("chat \"%s\"", msg));
 		else
 			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"%s\"", msg));
+#endif
 	}
 }
+
+
+void KickClient(int slotid, const char* msg) {
+#ifdef GAME_NO_DROP_CLIENT
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("kick %d\n", slotid));
+#else
+	g_syscall(G_DROP_CLIENT, slotid, msg);
+#endif
+}
+
 
 char* concatargs(int min) {
 	static char text[MAX_DATA_LENGTH];
 	char arg[MAX_DATA_LENGTH];
-	int max = g_syscall(G_ARGC);
+	int max = (int)g_syscall(G_ARGC);
 	size_t x = 1;
 	text[0] = '\0';
 	for (int i = min; i < max; ++i) {
@@ -88,12 +101,14 @@ char* concatargs(int min) {
 	return text;
 }
 
+
 bool is_valid_map(const char* map) {
 	fileHandle_t fmap;
-	int mapsize = g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps\\%s", map), &fmap, FS_READ);
+	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps\\%s", map), &fmap, FS_READ);
 	g_syscall(G_FS_FCLOSE_FILE, fmap);
 	return mapsize ? 1 : 0;
 }
+
 
 char** tok_parse(const char* str, char split) {
 	if (!str || !*str)
@@ -114,17 +129,23 @@ char** tok_parse(const char* str, char split) {
 	}
 
 	char** arr = (char**)malloc(sizeof(char*) * toks);
+	if (!arr)
+		return NULL;
+
 	for (i = 0, index = 0; i <= slen; ++i) {
 		if (copy[i] == split || !copy[i]) {
-			arr[index++] = tokstart;
+			if (index < toks)
+				arr[index++] = tokstart;
 			tokstart = &copy[i+1];
 			copy[i] = '\0';
 		}
 	}
-	arr[index] = NULL;
+	if (index < toks)
+		arr[index] = NULL;
 
 	return arr;	
 }
+
 
 void tok_free(char** arr) {
 	if (arr) {
@@ -134,11 +155,13 @@ void tok_free(char** arr) {
 	}
 }
 
+
 void setcvar(const char* cvar, int datanum) {
 	char value[MAX_DATA_LENGTH];
 	QMM_ARGV(datanum, value, sizeof(value));
 	g_syscall(G_CVAR_SET, cvar, value);
 }
+
 
 const char* StripCodes(const char* name) {
 	static char temp[MAX_NETNAME];
@@ -159,6 +182,7 @@ const char* StripCodes(const char* name) {
 	return temp;
 }
 
+
 // cycling array of buffers
 const char* lcase(const char* string) {
 	static char buf[8][1024];
@@ -174,6 +198,7 @@ const char* lcase(const char* string) {
 	index = (index + 1) & 7;
 	return buf[i];
 }
+
 
 // returns index of matching name
 // -1 when ambiguous or not found
@@ -214,6 +239,7 @@ int namematch(const char* string, bool ret_first, int start_after) {
 	return matchid;
 }
 
-qboolean Info_Validate(const char* s) {
-	return (strchr(s, '\"') || strchr(s, ';')) ? qfalse : qtrue;
+
+bool InfoString_Validate(const char* s) {
+	return (strchr(s, '\"') || strchr(s, ';')) ? false : true;
 }

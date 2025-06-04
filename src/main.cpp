@@ -37,15 +37,20 @@ mod_vmMain_t g_vmMain = NULL;
 pluginfuncs_t* g_pluginfuncs = NULL;
 pluginvars_t* g_pluginvars = NULL;
 
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+gentity_t* g_gents = NULL;
+int g_gentsize = sizeof(gentity_t);
+#endif
+
 playerinfo_t g_playerinfo[MAX_CLIENTS];		// store qadmin-specific user info
 
 userinfo_t g_userinfo[MAX_USER_ENTRIES];	// store user/pass data
 intptr_t g_maxuserinfo = -1;
 
-intptr_t g_defaultAccess = 1;
+int g_defaultAccess = 1;
 
 time_t g_mapstart;
-intptr_t g_levelTime;
+int g_levelTime;
 
 char** g_gaggedCmds = NULL;
 
@@ -93,7 +98,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		
 	// handle client commands
 	} else if (cmd == GAME_CLIENT_COMMAND) {
-		return handlecommand(arg0, 0);
+		return handlecommand((int)arg0, 0);
 
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	} else if (cmd == GAME_CONSOLE_COMMAND) {
@@ -110,14 +115,14 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 	// handle the game initialization (independent of mod being loaded)
 	} else if (cmd == GAME_INIT) {
-		g_levelTime = arg0;
+		g_levelTime = (int)arg0;
 
 	// handle the game shutdown
 	} else if (cmd == GAME_SHUTDOWN) {
 		// do shutdown stuff
 	
 	} else if (cmd == GAME_RUN_FRAME) {
-		g_levelTime = arg0;
+		g_levelTime = (int)arg0;
 
 		if (g_vote.inuse && arg0 >= g_vote.finishtime)
 			vote_finish();
@@ -137,7 +142,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		char userinfo[MAX_INFO_STRING];
 		g_syscall(G_GET_USERINFO, arg0, userinfo, sizeof(userinfo));
 
-		if (!Info_Validate(userinfo))
+		if (!InfoString_Validate(userinfo))
 			QMM_RET_IGNORED(1);
 
 		if (cmd == GAME_CLIENT_CONNECT) {
@@ -157,6 +162,11 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 
 	// handle the game initialization (dependent on mod being loaded)
 	} else if (cmd == GAME_INIT) {
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+		g_gents = *(gentity_t**)g_vmMain(GAMEVP_EDICTS);
+		g_gentsize = *(int*)g_vmMain(GAMEV_EDICT_SIZE);
+#endif
+
 		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
 		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		
