@@ -1,6 +1,6 @@
 /*
 QADMIN_QMM - Server Administration Plugin
-Copyright 2004-2024
+Copyright 2004-2025
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
@@ -9,10 +9,13 @@ Created By:
 
 */
 
-#include "version.h"
-#include <q_shared.h>
-#include <g_local.h>
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #include <qmmapi.h>
+
+#include "version.h"
+#include "game.h"
+
 #include <string.h>
 #include <time.h>
 #include "main.h"
@@ -21,7 +24,7 @@ Created By:
 
 voteinfo_t g_vote;
 
-//initiate a vote
+// initiate a vote
 void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, void* param) {
 	if (g_vote.inuse) {
 		ClientPrint(clientnum, "[QADMIN] A vote is already running\n");
@@ -36,7 +39,7 @@ void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, v
 	memset(g_vote.votes, 0, sizeof(g_vote.votes));
 }
 
-//someone has voted (vote should be 1-9)
+// someone has voted (vote should be 1-9)
 void vote_add(int clientnum, int vote) {
 	if (!g_vote.inuse) {
 		ClientPrint(clientnum, "[QADMIN] There is no vote currently running\n");
@@ -57,14 +60,14 @@ void vote_add(int clientnum, int vote) {
 	ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Vote counted for %d\n", vote));
 }
 
-//vote has ended
+// vote has ended
 void vote_finish() {
 	int winner = 0, totalvotes = 0, i;
 	int votecount[MAX_CHOICES];
 	memset(votecount, 0, sizeof(votecount));
 
-	//tally up the votes
-	//g_vote.votes[] stores 1-9, so subtract 1 to get proper votecount index
+	// tally up the votes
+	// g_vote.votes[] stores 1-9, so subtract 1 to get proper votecount index
 	for (i = 0; i < MAX_CLIENTS; ++i) {
 		if (!g_vote.votes[i])
 			continue;
@@ -73,13 +76,13 @@ void vote_finish() {
 		++votecount[g_vote.votes[i] - 1];
 	}
 
-	//figure out which choice won
+	// figure out which choice won
 	for (i = 0; i < MAX_CHOICES; ++i) {
 		if (votecount[i] > votecount[winner])
 			winner = i;
 	}
 
-	//if the winning votecount is 0 (no one voted), then give winner as 0
+	// if the winning votecount is 0 (no one voted), then give winner as 0
 	g_vote.votefunc(votecount[winner] ? winner + 1 : 0, votecount[winner], totalvotes, g_vote.param);
 	g_vote.inuse = 0;
 }

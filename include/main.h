@@ -1,6 +1,6 @@
 /*
 QADMIN_QMM - Server Administration Plugin
-Copyright 2004-2024
+Copyright 2004-2025
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __QADMIN_QMM_MAIN_H__
+#define __QADMIN_QMM_MAIN_H__
 
 #define MAX_STRING_LENGTH 1024
 #define MAX_DATA_LENGTH 200
@@ -19,7 +19,7 @@ Created By:
 
 #define MAX_USER_ENTRIES 64
 
-//MAX_NETNAME = (35 + 1)
+// MAX_NETNAME = (35 + 1)
 #define MAX_USER_LENGTH MAX_NETNAME
 #define MAX_GUID_LENGTH 32 + 1
 #define MAX_PASS_LENGTH 32 + 1
@@ -59,16 +59,16 @@ typedef enum addusertype_e {
 
 #define ACCESS_IMMUNITY	LEVEL_1024
 
-typedef int (*pfnAdminCmd)(int,int,int);		//signature of a command handler
+typedef int (*pfnAdminCmd)(int,int,int);		// signature of a command handler
 
-//command handler info
+// command handler info
 typedef struct admincmd_s {
-	char* cmd;
+	const char* cmd;
 	pfnAdminCmd func;
 	int reqaccess;
 	int minargs;
-	char* usage;
-	char* help;
+	const char* usage;
+	const char* help;
 } admincmd_t;
 
 extern admincmd_t g_admincmds[];
@@ -95,12 +95,12 @@ typedef struct userinfo_s {
 #define usertype(x) (x==au_ip?"IP":(x==au_name?"name":"ID"))
 
 extern userinfo_t g_userinfo[];
-extern int g_maxuserinfo;
+extern intptr_t g_maxuserinfo;
 
-extern int g_defaultAccess;
+extern intptr_t g_defaultAccess;
 
 extern time_t g_mapstart;
-extern int g_levelTime;
+extern intptr_t g_levelTime;
 
 extern char** g_gaggedCmds;
 
@@ -108,4 +108,4 @@ void reload();
 int handlecommand(int,int);
 int admin_adduser(addusertype_t type);
 
-#endif //__MAIN_H__
+#endif // __QADMIN_QMM_MAIN_H__

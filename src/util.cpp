@@ -1,6 +1,6 @@
 /*
 QADMIN_QMM - Server Administration Plugin
-Copyright 2004-2024
+Copyright 2004-2025
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
@@ -9,10 +9,13 @@ Created By:
 
 */
 
-#include "version.h"
-#include <q_shared.h>
-#include <g_local.h>
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #include <qmmapi.h>
+
+#include "version.h"
+#include "game.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include "main.h"
@@ -34,7 +37,7 @@ bool has_access(int clientnum, int reqaccess) {
 	return ((g_playerinfo[clientnum].access & reqaccess) == reqaccess);
 }
 
-//returns the first slot id with given ip starting after the slot id specified in 'start_after'
+// returns the first slot id with given ip starting after the slot id specified in 'start_after'
 int user_with_ip(const char* ip, int start_after) {
 	for (int i = start_after + 1; i < MAX_CLIENTS; ++i) {
 		if (!strcmp(ip, g_playerinfo[i].ip))
@@ -51,7 +54,7 @@ int arrsize(admincmd_t* arr) {
 }
 
 void ClientPrint(int clientnum, const char* msg, bool chat) {
-	//remove any QMM_VARARGS() conflicts by making a temp string
+	// remove any QMM_VARARGS() conflicts by making a temp string
 	static char temp[MAX_STRING_LENGTH];
 	strncpy(temp, msg, MAX_STRING_LENGTH);
 	msg = (const char*)temp;
@@ -70,10 +73,10 @@ char* concatargs(int min) {
 	static char text[MAX_DATA_LENGTH];
 	char arg[MAX_DATA_LENGTH];
 	int max = g_syscall(G_ARGC);
-	int x = 1;
+	size_t x = 1;
 	text[0] = '\0';
 	for (int i = min; i < max; ++i) {
-		g_syscall(G_ARGV, i, arg, sizeof(arg));
+		QMM_ARGV(i, arg, sizeof(arg));
 		strncat(text, arg, sizeof(text) - x);
 		x += strlen(arg);
 		strncat(text, " ", sizeof(text) - x);
@@ -96,10 +99,12 @@ char** tok_parse(const char* str, char split) {
 	if (!str || !*str)
 		return NULL;
 
-	int i, index;
-	//toks is 1 to allocate the NULL terminating pointer
-	int toks = 1, slen = strlen(str);
+	size_t i, index, slen = strlen(str);
+	// toks is 1 to allocate the NULL terminating pointer
+	int toks = 1;
 	char* copy = (char*)malloc(slen + 1);
+	if (!copy)
+		return NULL;
 	char* tokstart = copy;
 	memcpy(copy, str, slen + 1);
 
@@ -129,20 +134,20 @@ void tok_free(char** arr) {
 	}
 }
 
-void setcvar(char* cvar, int datanum) {
+void setcvar(const char* cvar, int datanum) {
 	char value[MAX_DATA_LENGTH];
-	g_syscall(G_ARGV, datanum, value, sizeof(value));
+	QMM_ARGV(datanum, value, sizeof(value));
 	g_syscall(G_CVAR_SET, cvar, value);
 }
 
 const char* StripCodes(const char* name) {
 	static char temp[MAX_NETNAME];
 
-	int slen = strlen(name);
+	size_t slen = strlen(name);
 	if (slen >= MAX_NETNAME)
 		slen = MAX_NETNAME - 1;
 
-	for (int i = 0, j = 0; i < slen; ++i) {
+	for (size_t i = 0, j = 0; i < slen; ++i) {
 		if (name[i] == Q_COLOR_ESCAPE) {
 			if (name[i+1] != Q_COLOR_ESCAPE)
 				++i;
@@ -154,7 +159,7 @@ const char* StripCodes(const char* name) {
 	return temp;
 }
 
-//cycling array of buffers
+// cycling array of buffers
 const char* lcase(const char* string) {
 	static char buf[8][1024];
 	static int index = 0;
@@ -170,12 +175,13 @@ const char* lcase(const char* string) {
 	return buf[i];
 }
 
-//returns index of matching name
-//-1 when ambiguous or not found
+// returns index of matching name
+// -1 when ambiguous or not found
 int namematch(const char* string, bool ret_first, int start_after) {
 	char lstring[MAX_NAME_LENGTH];
-	//copied so the lcase-local static buffer is not overwritten in the big loop below
+	// copied so the lcase-local static buffer is not overwritten in the big loop below
 	strncpy(lstring, lcase(string), sizeof(lstring));
+	lstring[sizeof(lstring) - 1] = '\0';
 
 	const char* lfullname = NULL;
 	const char* lstripname = NULL;
@@ -186,11 +192,11 @@ int namematch(const char* string, bool ret_first, int start_after) {
 		if (!g_playerinfo[i].connected)
 			continue;
 
-		//on a complete match, return
+		// on a complete match, return
 		if (!strcmp(string, g_playerinfo[i].name))
 			return i;
 
-		//try partial matches, if we have 2, cancel
+		// try partial matches, if we have 2, cancel
 		lfullname = lcase(g_playerinfo[i].name);
 		lstripname = lcase(g_playerinfo[i].stripname);
 
@@ -208,55 +214,6 @@ int namematch(const char* string, bool ret_first, int start_after) {
 	return matchid;
 }
 
-//from Q3SDK, thanks id :)
-char* Info_ValueForKey(const char* s, const char* key) {
-	char pkey[BIG_INFO_KEY];
-	static char value[2][BIG_INFO_VALUE];	// use two buffers so compares
-						// work without stomping on each other
-	static int valueindex = 0;
-	char *o;
-	
-	if (!s || !key)
-		return "";
-
-	if (strlen(s) >= BIG_INFO_STRING) {
-		g_syscall(G_PRINT, "[QADMIN] ERROR: Info_ValueForKey: oversize infostring\n");
-		return "";
-	}
-
-	valueindex ^= 1;
-	if (*s == '\\')
-		s++;
-	while (1)
-	{
-		o = pkey;
-		while (*s != '\\')
-		{
-			if (!*s)
-				return "";
-			*o++ = *s++;
-		}
-		*o = 0;
-		s++;
-
-		o = value[valueindex];
-
-		while (*s != '\\' && *s)
-		{
-			*o++ = *s++;
-		}
-		*o = 0;
-
-		if (!strcasecmp(key, pkey))
-			return value[valueindex];
-
-		if (!*s)
-			break;
-		s++;
-	}
-
-	return "";
-}
 qboolean Info_Validate(const char* s) {
 	return (strchr(s, '\"') || strchr(s, ';')) ? qfalse : qtrue;
 }

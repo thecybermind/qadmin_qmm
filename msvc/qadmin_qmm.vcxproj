@@ -220,13 +220,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\game.h" />
+    <ClInclude Include="..\include\main.h" />
+    <ClInclude Include="..\include\util.h" />
+    <ClInclude Include="..\include\vote.h" />
     <ClInclude Include="..\include\version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\cmds.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
+    <ClCompile Include="..\src\vote.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="advchat_qmm.rc">
+    <ResourceCompile Include="qadmin_qmm.rc">
       <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">_UNICODE;UNICODE;%(PreprocessorDefinitions);_WIN64</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemGroup>
@@ -234,7 +240,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{1d5be629-82d1-4511-8559-5116bfe4338c}</ProjectGuid>
-    <RootNamespace>advchat_qmm</RootNamespace>
+    <RootNamespace>qadmin_qmm</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -538,7 +544,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_Q3A</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_Q3A</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -562,7 +568,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_RTCWMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_RTCWMP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -586,7 +592,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_RTCWSP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_RTCWSP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -610,7 +616,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_WET</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_WET</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -634,7 +640,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_JK2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_JK2MP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -658,7 +664,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_JAMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_JAMP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -682,7 +688,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_STVOYHM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_STVOYHM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -706,7 +712,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_STEF2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_STEF2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -730,7 +736,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHAA</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHAA</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -754,7 +760,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHSH</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHSH</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -778,7 +784,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHBT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_MOHBT</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -802,7 +808,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_Q2R</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_Q2R</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -822,7 +828,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_QUAKE2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_QUAKE2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -846,7 +852,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_SOF2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_DEBUG;GAME_SOF2MP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -872,7 +878,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_Q3A</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_Q3A</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -900,7 +906,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_RTCWMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_RTCWMP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -928,7 +934,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_RTCWSP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_RTCWSP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -956,7 +962,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_WET</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_WET</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -984,7 +990,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_JK2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_JK2MP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1012,7 +1018,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_JAMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_JAMP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1040,7 +1046,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_STVOYHM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_STVOYHM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1068,7 +1074,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_STEF2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_STEF2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1096,7 +1102,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHAA</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHAA</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1124,7 +1130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHSH</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHSH</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1152,7 +1158,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHBT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_MOHBT</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1180,7 +1186,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_Q2R</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_Q2R</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1204,7 +1210,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_QUAKE2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_QUAKE2</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1232,7 +1238,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;ADVCHAT_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_SOF2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;QADMIN_QMM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NDEBUG;GAME_SOF2MP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

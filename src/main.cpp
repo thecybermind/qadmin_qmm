@@ -1,6 +1,6 @@
 /*
 QADMIN_QMM - Server Administration Plugin
-Copyright 2004-2024
+Copyright 2004-2025
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
@@ -9,63 +9,62 @@ Created By:
 
 */
 
-#include "version.h"
-#include <q_shared.h>
-#include <g_local.h>
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #include <qmmapi.h>
+
+#include "version.h"
+#include "game.h"
+
 #include <string.h>
 #include <time.h>
 #include "main.h"
 #include "vote.h"
 #include "util.h"
 
-pluginres_t* g_result = NULL;		//QMM result pointer
+pluginres_t* g_result = NULL;
 plugininfo_t g_plugininfo = {
-	"QAdmin",			//name of plugin
-	QADMIN_QMM_VERSION,		//version of plugin
-	"Administration Plugin",	//description of plugin
-	"CyberMind",			//author of plugin
-	"http://www.quake3mm.net/",	//website of plugin
-	0,				//can this plugin be paused?
-	0,				//can this plugin be loaded via cmd
-	1,				//can this plugin be unloaded via cmd
-	QMM_PIFV_MAJOR,
-	QMM_PIFV_MINOR
+	QMM_PIFV_MAJOR,									// plugin interface version major
+	QMM_PIFV_MINOR,									// plugin interface version minor
+	"QAdmin",										// name of plugin
+	QADMIN_QMM_VERSION,								// version of plugin
+	"Administration Plugin",						// description of plugin
+	QADMIN_QMM_BUILDER,								// author of plugin
+	"https://github.com/thecybermind/qadmin_qmm/",	// website of plugin
 };
-eng_syscall_t g_syscall = NULL;		//engine's syscall pointer
-mod_vmMain_t g_vmMain = NULL;		//mod's vmMain pointer
-int g_vmbase = 0;			//VM base address, used with GETPTR() macro
+eng_syscall_t g_syscall = NULL;
+mod_vmMain_t g_vmMain = NULL;
 pluginfuncs_t* g_pluginfuncs = NULL;
+pluginvars_t* g_pluginvars = NULL;
 
-playerinfo_t g_playerinfo[MAX_CLIENTS];	//store qadmin-specific user info
+playerinfo_t g_playerinfo[MAX_CLIENTS];		// store qadmin-specific user info
 
-userinfo_t g_userinfo[MAX_USER_ENTRIES];	//store user/pass data
-int g_maxuserinfo = -1;
+userinfo_t g_userinfo[MAX_USER_ENTRIES];	// store user/pass data
+intptr_t g_maxuserinfo = -1;
 
-int g_defaultAccess = 1;
+intptr_t g_defaultAccess = 1;
 
 time_t g_mapstart;
-int g_levelTime;
+intptr_t g_levelTime;
 
 char** g_gaggedCmds = NULL;
 
-//first function called in plugin, give QMM the plugin info
+// first function called in plugin, give QMM the plugin info
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
-//second function called, save pointers
-C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, int vmbase, int iscmd) {
+// second function called, save pointers
+C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
-	iscmd = 0;			//ignore, but satisfy gcc -Wall
 
-	g_syscall(G_PRINT, QMM_VARARGS("[QADMIN] %s v%s by %s (%s)\n", g_plugininfo.name, g_plugininfo.version, g_plugininfo.author, g_plugininfo.url));
+	QMM_WRITEQMMLOG("QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "QADMIN");
 
-	//make version cvar
+	// make version cvar
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
 	g_syscall(G_CVAR_SET, "admin_version", QADMIN_QMM_VERSION);
 
-	//other cvars
+	// other cvars
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_default_access", "1", CVAR_ARCHIVE);
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_vote_kick_time", "60", CVAR_ARCHIVE);
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_vote_map_time", "60", CVAR_ARCHIVE);
@@ -78,44 +77,44 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	return 1;
 }
 
-//last function called, clean up stuff allocated in QMM_Attach
-C_DLLEXPORT void QMM_Detach(int iscmd) {
+// last function called, clean up stuff allocated in QMM_Attach
+C_DLLEXPORT void QMM_Detach() {
 	tok_free(g_gaggedCmds);
-
-	iscmd = 0;			//ignore, but satisfy gcc -Wall
 }
 
-//called before mod's vmMain (engine->mod)
-C_DLLEXPORT int QMM_vmMain(int cmd, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11) {
-	//get client info on connection (moved to Post)
-	//clear client info on disconnection
+// called before mod's vmMain (engine->mod)
+C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
+	intptr_t arg0 = args[0];
+
+	// get client info on connection (moved to Post)
+	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
 		memset(&g_playerinfo[arg0], 0, sizeof(g_playerinfo[arg0]));
 		
-	//handle client commands
+	// handle client commands
 	} else if (cmd == GAME_CLIENT_COMMAND) {
 		return handlecommand(arg0, 0);
 
-	//allow admin commands from console with "admin_cmd" or "a_c" commands
+	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	} else if (cmd == GAME_CONSOLE_COMMAND) {
 		char command[MAX_COMMAND_LENGTH];
-		g_syscall(G_ARGV, 0, command, sizeof(command));
-		if (!strcasecmp(command, "admin_cmd") || !strcasecmp(command, "a_c"))
+		QMM_ARGV(0, command, sizeof(command));
+		if (!_stricmp(command, "admin_cmd") || !_stricmp(command, "a_c"))
 			return handlecommand(SERVER_CONSOLE, 1);
-		else if (!strcasecmp(command, "admin_adduser_ip"))
+		else if (!_stricmp(command, "admin_adduser_ip"))
 			return admin_adduser(au_ip);
-		else if (!strcasecmp(command, "admin_adduser_name"))
+		else if (!_stricmp(command, "admin_adduser_name"))
 			return admin_adduser(au_name);
-		else if (!strcasecmp(command, "admin_adduser_id"))
+		else if (!_stricmp(command, "admin_adduser_id"))
 			return admin_adduser(au_id);
 
-	//handle the game initialization (independent of mod being loaded)
+	// handle the game initialization (independent of mod being loaded)
 	} else if (cmd == GAME_INIT) {
 		g_levelTime = arg0;
 
-	//handle the game shutdown
+	// handle the game shutdown
 	} else if (cmd == GAME_SHUTDOWN) {
-		//do shutdown stuff
+		// do shutdown stuff
 	
 	} else if (cmd == GAME_RUN_FRAME) {
 		g_levelTime = arg0;
@@ -127,11 +126,13 @@ C_DLLEXPORT int QMM_vmMain(int cmd, int arg0, int arg1, int arg2, int arg3, int 
 	QMM_RET_IGNORED(1);
 }
 
-//called after mod's vmMain (engine->mod)
-C_DLLEXPORT int QMM_vmMain_Post(int cmd, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11) {
-	//save client data on connection
-	//(this is here so that the game has a chance to do various info checking before
-	//we get the values)
+// called after mod's vmMain (engine->mod)
+C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
+	intptr_t arg0 = args[0];
+
+	// save client data on connection
+	// (this is here so that the game has a chance to do various info checking before
+	// we get the values)
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
 		char userinfo[MAX_INFO_STRING];
 		g_syscall(G_GET_USERINFO, arg0, userinfo, sizeof(userinfo));
@@ -145,19 +146,19 @@ C_DLLEXPORT int QMM_vmMain_Post(int cmd, int arg0, int arg1, int arg2, int arg3,
 			g_playerinfo[arg0].access = g_defaultAccess;
 		}
 
-		strncpy(g_playerinfo[arg0].ip, Info_ValueForKey(userinfo, "ip"), sizeof(g_playerinfo[arg0].ip));
-		//if a situation arises where the ip is exactly 15 bytes long, the 16th byte
-		//in the buffer will be ':', so this will terminate the string anyway
+		strncpy(g_playerinfo[arg0].ip, QMM_INFOVALUEFORKEY(userinfo, "ip"), sizeof(g_playerinfo[arg0].ip));
+		// if a situation arises where the ip is exactly 15 bytes long, the 16th byte
+		// in the buffer will be ':', so this will terminate the string anyway
 		char* temp = strstr(g_playerinfo[arg0].ip, ":");
 		if (temp) *temp = '\0';
-		strncpy(g_playerinfo[arg0].guid, Info_ValueForKey(userinfo, "cl_guid"), sizeof(g_playerinfo[arg0].guid));
-		strncpy(g_playerinfo[arg0].name, Info_ValueForKey(userinfo, "name"), sizeof(g_playerinfo[arg0].name));
+		strncpy(g_playerinfo[arg0].guid, QMM_INFOVALUEFORKEY(userinfo, "cl_guid"), sizeof(g_playerinfo[arg0].guid));
+		strncpy(g_playerinfo[arg0].name, QMM_INFOVALUEFORKEY(userinfo, "name"), sizeof(g_playerinfo[arg0].name));
 		strncpy(g_playerinfo[arg0].stripname, StripCodes(g_playerinfo[arg0].name), sizeof(g_playerinfo[arg0].stripname));
 
-	//handle the game initialization (dependent on mod being loaded)
+	// handle the game initialization (dependent on mod being loaded)
 	} else if (cmd == GAME_INIT) {
 		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
-		//g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
+		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		
 		time(&g_mapstart);
 
@@ -167,13 +168,12 @@ C_DLLEXPORT int QMM_vmMain_Post(int cmd, int arg0, int arg1, int arg2, int arg3,
 	QMM_RET_IGNORED(1);
 }
 
-//called before engine's syscall (mod->engine)
-C_DLLEXPORT int QMM_syscall(int cmd, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11, int arg12) {
-
+// called before engine's syscall (mod->engine)
+C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }
 
-//called after engine's syscall (mod->engine)
-C_DLLEXPORT int QMM_syscall_Post(int cmd, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11, int arg12) {
+// called after engine's syscall (mod->engine)
+C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }

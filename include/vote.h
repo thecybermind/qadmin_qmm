@@ -1,6 +1,6 @@
 /*
 QADMIN_QMM - Server Administration Plugin
-Copyright 2004-2024
+Copyright 2004-2025
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __VOTE_H__
-#define __VOTE_H__
+#ifndef __QADMIN_QMM_VOTE_H__
+#define __QADMIN_QMM_VOTE_H__
 
 #define MAX_CHOICES 9
 
@@ -31,4 +31,4 @@ void vote_start(int, pfnVoteFunc, int, int, void*);
 void vote_add(int, int);
 void vote_finish();
 
-#endif //__VOTE_H__
+#endif // __QADMIN_QMM_VOTE_H__
