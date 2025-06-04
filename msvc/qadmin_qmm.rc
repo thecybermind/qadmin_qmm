@@ -7,7 +7,9 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "WinResrc.h"
+#define IDC_STATIC -1
+
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,7 +36,9 @@ END
 
 2 TEXTINCLUDE DISCARDABLE
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""WinResrc.h""\r\n"
+    "#define IDC_STATIC -1\r\n"
+
     "\0"
 END
 
@@ -54,7 +58,7 @@ END
 //
 
 #define MSVC_RC
-#include "../version.h"
+#include "../include/version.h"
 #undef MSVC_RC
 
 VS_VERSION_INFO VERSIONINFO
@@ -74,16 +78,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "QMM Team\0"
-            VALUE "FileDescription", "qadmin_qmm\0"
+            VALUE "Comments", "Server administration plugin\0"
+            VALUE "CompanyName", " \0"
+            VALUE "FileDescription", "qadmin_qmm " QADMIN_QMM_OS " " QADMIN_QMM_ARCH "\0"
             VALUE "FileVersion", QADMIN_QMM_VERSION "\0"
             VALUE "InternalName", "qadmin_qmm\0"
             VALUE "LegalCopyright", "Copyright 2004-?\0"
-            VALUE "LegalTrademarks", "Quake is probably a trademark of id games\0"
+            VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "qadmin_qmm.dll\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "qadmin\0"
+            VALUE "ProductName", "qadmin_qmm\0"
             VALUE "ProductVersion", QADMIN_QMM_VERSION "\0"
             VALUE "SpecialBuild", "\0"
         END

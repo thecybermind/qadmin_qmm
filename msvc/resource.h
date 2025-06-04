@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by qadmin_qmm.rc
+// Used by stub_qmm.rc
 //
 
 // Next default values for new objects
