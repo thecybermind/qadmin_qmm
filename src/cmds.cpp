@@ -910,7 +910,7 @@ admincmd_t g_admincmds[] = {
 	{ "admin_pass",			admin_pass,			LEVEL_16,	1, "admin_pass <password>", "Changes the server password" },
 	{ "admin_psay",			admin_psay,			LEVEL_64,	2, "admin_psay <name> <text>", "Sends the message to specified player" },
 	{ "admin_nopass",		admin_pass,			LEVEL_16,	0, "admin_nopass", "Clears the server password" },
-	{ "admin_rcon",			admin_rcon,			LEVEL_65536,	1, "admin_rcon <command>", "Executes the command on the server" },
+	{ "admin_rcon",			admin_rcon,			LEVEL_65536,1, "admin_rcon <command>", "Executes the command on the server" },
 	{ "admin_reload",		admin_reload,		LEVEL_4,	0, "admin_reload", "Reloads various QAdmin configs and cvars" },
 	{ "admin_say",			admin_say,			LEVEL_64,	1, "admin_say <text>", "Sends the message to all players" },
 	{ "admin_timeleft",		admin_timeleft,		LEVEL_0,	0, "admin_timeleft", "Displays the time left on this map" },
@@ -924,22 +924,22 @@ admincmd_t g_admincmds[] = {
 	{ "admin_vote_map",		admin_vote_map,		LEVEL_1,	1, "admin_vote_map <map>", "Initiates a vote to change to the map" },
 	{ "castvote",			castvote,			LEVEL_1,	1, "castvote <option>", "Places a vote for the given option" },
 
-	{ "say",		say,			LEVEL_0,	0, NULL, NULL },
+	{ "say",				say,				LEVEL_0,	0, NULL, NULL },
 
-//	{ "admin_ban",		admin_ban,		LEVEL_256,	1, "admin_ban <name> ['guid'] [message]", "Bans the specified user by IP, unless 'id' is specified" },
-//	{ "admin_banid",	admin_ban,		LEVEL_256,	1, "admin_banid <guid> [message]", "Bans the specified GUID" },
-//	{ "admin_banip",	admin_ban,		LEVEL_256,	1, "admin_banip <ip> [message]", "Bans the specified IP" },
-//	{ "admin_unban",	admin_unban,		LEVEL_256,	1, "admin_unban <guid|ip>", "Unbans the specified GUID or IP" },
-//	{ "admin_unbanid",	admin_unban,		LEVEL_256,	1, "admin_unbanid <guid>", "Unbans the specified GUID" },
-//	{ "admin_unbanip",	admin_unban,		LEVEL_256,	1, "admin_unbanip <ip>", "Unbans the specified IP" },
+//	{ "admin_ban",		admin_ban,				LEVEL_256,	1, "admin_ban <name> ['guid'] [message]", "Bans the specified user by IP, unless 'id' is specified" },
+//	{ "admin_banid",	admin_ban,				LEVEL_256,	1, "admin_banid <guid> [message]", "Bans the specified GUID" },
+//	{ "admin_banip",	admin_ban,				LEVEL_256,	1, "admin_banip <ip> [message]", "Bans the specified IP" },
+//	{ "admin_unban",	admin_unban,			LEVEL_256,	1, "admin_unban <guid|ip>", "Unbans the specified GUID or IP" },
+//	{ "admin_unbanid",	admin_unban,			LEVEL_256,	1, "admin_unbanid <guid>", "Unbans the specified GUID" },
+//	{ "admin_unbanip",	admin_unban,			LEVEL_256,	1, "admin_unbanip <ip>", "Unbans the specified IP" },
 
 	{ NULL, NULL, 0, 0, NULL, NULL }
 };
 admincmd_t g_saycmds[] = {
-	{ "admin_login",	admin_login,		LEVEL_0,	1, NULL, NULL },
-	{ "castvote",		castvote,		LEVEL_1,	1, NULL, NULL },
-	{ "currentmap",		admin_currentmap,	LEVEL_0,	0, NULL, NULL },
-	{ "timeleft",		admin_timeleft,		LEVEL_0,	0, NULL, NULL },
+	{ "admin_login",	admin_login,			LEVEL_0,	1, NULL, NULL },
+	{ "castvote",		castvote,				LEVEL_1,	1, NULL, NULL },
+	{ "currentmap",		admin_currentmap,		LEVEL_0,	0, NULL, NULL },
+	{ "timeleft",		admin_timeleft,			LEVEL_0,	0, NULL, NULL },
 
 	{ NULL, NULL, 0, 0, NULL, NULL }
 };
