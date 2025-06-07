@@ -12,6 +12,9 @@ Created By:
 #ifndef __QADMIN_QMM_MAIN_H__
 #define __QADMIN_QMM_MAIN_H__
 
+#include <vector>
+#include <string>
+
 #define MAX_STRING_LENGTH 1024
 #define MAX_DATA_LENGTH 200
 #define MAX_COMMAND_LENGTH 64
@@ -84,7 +87,7 @@ typedef struct playerinfo_s {
 	bool gagged;
 	bool connected;
 } playerinfo_t;
-extern playerinfo_t g_playerinfo[];
+extern std::vector<playerinfo_t> g_playerinfo;
 
 typedef struct userinfo_s {
 	char user[MAX_USER_LENGTH];
@@ -97,7 +100,7 @@ typedef struct userinfo_s {
 extern gentity_t* g_gents;
 extern int g_gentsize;
 
-extern userinfo_t g_userinfo[];
+extern std::vector<userinfo_t> g_userinfo;
 extern intptr_t g_maxuserinfo;
 
 extern int g_defaultAccess;
@@ -105,10 +108,6 @@ extern int g_defaultAccess;
 extern time_t g_mapstart;
 extern int g_levelTime;
 
-extern char** g_gaggedCmds;
-
-void reload();
-int handlecommand(int,int);
-int admin_adduser(addusertype_t type);
+extern std::vector<std::string> g_gaggedCmds;
 
 #endif // __QADMIN_QMM_MAIN_H__

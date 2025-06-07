@@ -35,13 +35,8 @@ void reload() {
 			g_playerinfo[i].access = g_defaultAccess;
 	}
 
-	// deallocate previous gagged command array
-	tok_free(g_gaggedCmds);
-
 	// refresh gagged command list
-	const char* gagcmds = QMM_GETSTRCVAR("admin_gagged_cmds");
-	if (gagcmds && *gagcmds)
-		g_gaggedCmds = tok_parse(gagcmds, ',');
+	g_gaggedCmds = parse_str(QMM_GETSTRCVAR("admin_gagged_cmds"), ',');
 
 	QMM_WRITEQMMLOG("Configs/cvars (re)loaded\n", QMMLOG_INFO, "QADMIN");
 }
@@ -80,6 +75,57 @@ int admin_adduser(addusertype_t type) {
 
 	QMM_RET_SUPERCEDE(1);
 }
+
+
+int handlecommand(int clientnum, std::vector<std::string> args) {
+	std::string cmd = args[0];
+
+	int i = 0;
+	while (g_admincmds[i].cmd && g_admincmds[i].func) {
+		if (str_striequal(g_admincmds[i].cmd, cmd)) {
+			// if the client has access, run handler func (get return value, func will set result flag)
+			if (has_access(clientnum, g_admincmds[i].reqaccess)) {
+				// only run handler func if we provided enough args
+				// otherwise, show the help entry
+				if (g_syscall(G_ARGC) < (g_admincmds[i].minargs + 1)) {
+					ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Missing parameters, usage: %s\n", g_admincmds[i].usage));
+					QMM_RET_SUPERCEDE(1);
+				}
+				else
+					return (g_admincmds[i].func)(clientnum, args, g_admincmds[i].reqaccess);
+			}
+
+			// if client doesn't have access, give warning message
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+			g_syscall(G_CPRINTF, ENT_FROM_NUM(clientnum), QMM_VARARGS("print \"[QADMIN] You do not have access to that command: '%s'\n\"", command));
+#else
+			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"[QADMIN] You do not have access to that command: '%s'\n\"", command));
+#endif
+			QMM_RET_SUPERCEDE(1);
+		}
+
+		++i;
+	}
+
+	// check for gagged commands (but only for gagged users)
+	if (g_playerinfo[clientnum].gagged) {
+		i = 0;
+		for (auto gagcmd : g_gaggedCmds) {
+			if (!str_stricmp(cmd, gagcmd)) {
+				ClientPrint(clientnum, "[QADMIN] Sorry, you have been gagged.\n");
+				QMM_RET_SUPERCEDE(1);
+			}
+		}
+	}
+
+	if (clientnum == SERVER_CONSOLE) {
+		QMM_RET_SUPERCEDE(1);
+	}
+	else {
+		QMM_RET_IGNORED(0);
+	}
+}
+
 
 // main command handler
 // clientnum = client that did the command
@@ -121,12 +167,11 @@ int handlecommand(int clientnum, int cmdnum) {
 	// check for gagged commands (but only for gagged users)
 	if (g_playerinfo[clientnum].gagged) {
 		i = 0;
-		while(g_gaggedCmds[i]) {
-			if (!_stricmp(command, g_gaggedCmds[i])) {
+		for (auto gagcmd : g_gaggedCmds) {
+			if (!str_stricmp(command, gagcmd)) {
 				ClientPrint(clientnum, "[QADMIN] Sorry, you have been gagged.\n");
 				QMM_RET_SUPERCEDE(1);
 			}
-			++i;
 		}
 	}
 

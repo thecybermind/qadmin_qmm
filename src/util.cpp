@@ -16,6 +16,8 @@ Created By:
 #include "version.h"
 #include "game.h"
 
+#include <vector>
+#include <string>
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -242,4 +244,60 @@ int namematch(const char* string, bool ret_first, int start_after) {
 
 bool InfoString_Validate(const char* s) {
 	return (strchr(s, '\"') || strchr(s, ';')) ? false : true;
+}
+
+int str_stristr(std::string haystack, std::string needle) {
+	for (auto& c : haystack)
+		c = (char)std::tolower((unsigned char)c);
+	for (auto& c : needle)
+		c = (char)std::tolower((unsigned char)c);
+
+	return haystack.find(needle) != std::string::npos;
+}
+
+
+int str_stricmp(std::string s1, std::string s2) {
+	for (auto& c : s1)
+		c = (char)std::tolower((unsigned char)c);
+	for (auto& c : s2)
+		c = (char)std::tolower((unsigned char)c);
+
+	return s1.compare(s2);
+}
+
+
+int str_striequal(std::string s1, std::string s2) {
+	return str_stricmp(s1, s2) == 0;
+}
+
+
+std::vector<std::string> parse_str(std::string str, char sep) {
+	std::vector<std::string> ret;
+
+	size_t f = str.find(sep);
+	while (f != std::string::npos) {
+		ret.push_back(str.substr(0, f));
+		str = str.substr(f + 1);
+		f = str.find(sep);
+	}
+
+	return ret;
+}
+
+
+std::vector<std::string> parse_args(int start, int end) {
+	if (end < 0)
+		end = g_syscall(G_ARGC);
+
+	char temp[MAX_STRING_LENGTH];
+	std::string s;
+
+	for (int i = start; i <= end; i++) {
+		QMM_ARGV(i, temp, sizeof(temp));
+		if (i != start)
+			s += " ";
+		s += temp;
+	}
+
+	return parse_str(s, ' ');
 }

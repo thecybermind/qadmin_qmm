@@ -12,6 +12,9 @@ Created By:
 #ifndef __QADMIN_QMM_UTIL_H__
 #define __QADMIN_QMM_UTIL_H__
 
+#include <vector>
+#include <string>
+
 bool has_access(int, int);
 int user_with_ip(const char*, int = -1);
 int arrsize(admincmd_t*);
@@ -27,5 +30,12 @@ int namematch(const char*, bool = 0, int = -1);
 bool is_valid_map(const char*);
 
 bool InfoString_Validate(const char*);
+
+int str_stristr(std::string haystack, std::string needle);
+int str_stricmp(std::string s1, std::string s2);
+int str_striequal(std::string s1, std::string s2);
+
+std::vector<std::string> parse_str(std::string str, char sep = ' ');
+std::vector<std::string> parse_args(int start, int end = -1);
 
 #endif // __QADMIN_QMM_UTIL_H__

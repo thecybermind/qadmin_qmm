@@ -16,9 +16,12 @@ Created By:
 #include "version.h"
 #include "game.h"
 
+#include <string>
+#include <vector>
 #include <string.h>
 #include <time.h>
 #include "main.h"
+#include "cmds.h"
 #include "vote.h"
 #include "util.h"
 
@@ -42,9 +45,10 @@ gentity_t* g_gents = NULL;
 int g_gentsize = sizeof(gentity_t);
 #endif
 
-playerinfo_t g_playerinfo[MAX_CLIENTS];		// store qadmin-specific user info
+std::vector<playerinfo_t> g_playerinfo(MAX_CLIENTS);
 
-userinfo_t g_userinfo[MAX_USER_ENTRIES];	// store user/pass data
+std::vector<userinfo_t> g_userinfo;
+
 intptr_t g_maxuserinfo = -1;
 
 int g_defaultAccess = 1;
@@ -52,7 +56,7 @@ int g_defaultAccess = 1;
 time_t g_mapstart;
 int g_levelTime;
 
-char** g_gaggedCmds = NULL;
+std::vector<std::string> g_gaggedCmds;
 
 // first function called in plugin, give QMM the plugin info
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
@@ -76,15 +80,11 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
 	g_syscall(G_CVAR_REGISTER, NULL, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
 
-	memset(g_userinfo, 0, sizeof(g_userinfo));
-	memset(g_playerinfo, 0, sizeof(g_playerinfo));
-
 	return 1;
 }
 
 // last function called, clean up stuff allocated in QMM_Attach
 C_DLLEXPORT void QMM_Detach() {
-	tok_free(g_gaggedCmds);
 }
 
 // called before mod's vmMain (engine->mod)
@@ -94,10 +94,12 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// get client info on connection (moved to Post)
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
-		memset(&g_playerinfo[arg0], 0, sizeof(g_playerinfo[arg0]));
+		g_playerinfo[arg0] = {};
 		
 	// handle client commands
 	} else if (cmd == GAME_CLIENT_COMMAND) {
+		std::vector<std::string> args = parse_args(0);
+		return handlecommand(arg0, args);
 		return handlecommand((int)arg0, 0);
 
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
