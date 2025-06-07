@@ -37,25 +37,19 @@ bool has_access(int clientnum, int reqaccess) {
 	if (clientnum < 0 || clientnum >= MAX_CLIENTS)
 		return 0;
 
-	return ((g_playerinfo[clientnum].access & reqaccess) == reqaccess);
+	int access = g_playerinfo[clientnum].access | QMM_GETINTCVAR("admin_default_access");
+
+	return (access & reqaccess) == reqaccess;
 }
 
 
 // returns the first slot id with given ip starting after the slot id specified in 'start_after'
-int user_with_ip(const char* ip, int start_after) {
-	for (int i = start_after + 1; i < MAX_CLIENTS; ++i) {
-		if (!strcmp(ip, g_playerinfo[i].ip))
+int player_with_ip(std::string find, int start_after) {
+	for (int i = start_after + 1; i < g_playerinfo.size(); ++i) {
+		if (g_playerinfo[i].ip == find)
 			return i;
 	}
-
 	return -1;
-}
-
-
-int arrsize(admincmd_t* arr) {
-	int i;
-	for (i = 0; arr[i].cmd && arr[i].func; ++i);
-	return i;
 }
 
 
@@ -75,176 +69,93 @@ void ClientPrint(int clientnum, const char* msg, bool chat) {
 }
 
 
-void KickClient(int slotid, const char* msg) {
+void KickClient(int slotid, std::string message) {
 #ifdef GAME_NO_DROP_CLIENT
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("kick %d\n", slotid));
 #else
-	g_syscall(G_DROP_CLIENT, slotid, msg);
+	g_syscall(G_DROP_CLIENT, slotid, message.c_str());
 #endif
 }
 
 
-char* concatargs(int min) {
-	static char text[MAX_DATA_LENGTH];
-	char arg[MAX_DATA_LENGTH];
-	int max = (int)g_syscall(G_ARGC);
-	size_t x = 1;
-	text[0] = '\0';
-	for (int i = min; i < max; ++i) {
-		QMM_ARGV(i, arg, sizeof(arg));
-		strncat(text, arg, sizeof(text) - x);
-		x += strlen(arg);
-		strncat(text, " ", sizeof(text) - x);
-		++x;
-	}
-	
-	text[sizeof(text)-1] = '\0';
-
-	return text;
+void setcvar(std::string cvar, std::string value) {
+	g_syscall(G_CVAR_SET, cvar.c_str(), value.c_str());
 }
 
 
-bool is_valid_map(const char* map) {
-	fileHandle_t fmap;
-	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps\\%s", map), &fmap, FS_READ);
-	g_syscall(G_FS_FCLOSE_FILE, fmap);
-	return mapsize ? 1 : 0;
-}
-
-
-char** tok_parse(const char* str, char split) {
-	if (!str || !*str)
-		return NULL;
-
-	size_t i, index, slen = strlen(str);
-	// toks is 1 to allocate the NULL terminating pointer
-	int toks = 1;
-	char* copy = (char*)malloc(slen + 1);
-	if (!copy)
-		return NULL;
-	char* tokstart = copy;
-	memcpy(copy, str, slen + 1);
-
-	for (i = 0; i <= slen; ++i) {
-		if (copy[i] == split || !copy[i])
-			++toks;
-	}
-
-	char** arr = (char**)malloc(sizeof(char*) * toks);
-	if (!arr)
-		return NULL;
-
-	for (i = 0, index = 0; i <= slen; ++i) {
-		if (copy[i] == split || !copy[i]) {
-			if (index < toks)
-				arr[index++] = tokstart;
-			tokstart = &copy[i+1];
-			copy[i] = '\0';
-		}
-	}
-	if (index < toks)
-		arr[index] = NULL;
-
-	return arr;	
-}
-
-
-void tok_free(char** arr) {
-	if (arr) {
-		if (arr[0])
-			free((void*)(arr[0]));
-		free((void*)arr);
-	}
-}
-
-
-void setcvar(const char* cvar, int datanum) {
-	char value[MAX_DATA_LENGTH];
-	QMM_ARGV(datanum, value, sizeof(value));
-	g_syscall(G_CVAR_SET, cvar, value);
-}
-
-
-const char* StripCodes(const char* name) {
-	static char temp[MAX_NETNAME];
-
-	size_t slen = strlen(name);
-	if (slen >= MAX_NETNAME)
-		slen = MAX_NETNAME - 1;
-
-	for (size_t i = 0, j = 0; i < slen; ++i) {
+std::string stripcodes(std::string name) {
+	std::string ret;
+	bool is_escape = false;
+	for (size_t i = 0; i < name.size(); ++i) {
 		if (name[i] == Q_COLOR_ESCAPE) {
-			if (name[i+1] != Q_COLOR_ESCAPE)
-				++i;
+			if (name[i + 1] != Q_COLOR_ESCAPE)
+				i++;
 			continue;
 		}
-		temp[j++] = name[i];
+		ret += name[i];
 	}
 
-	return temp;
-}
-
-
-// cycling array of buffers
-const char* lcase(const char* string) {
-	static char buf[8][1024];
-	static int index = 0;
-	int i = index;
-
-	int j = 0;
-	for (j = 0; string[j]; ++j) {
-		buf[i][j] = tolower(string[j]);
-	}
-	buf[i][j] = '\0';
-
-	index = (index + 1) & 7;
-	return buf[i];
+	return ret;
 }
 
 
 // returns index of matching name
 // -1 when ambiguous or not found
-int namematch(const char* string, bool ret_first, int start_after) {
-	char lstring[MAX_NAME_LENGTH];
-	// copied so the lcase-local static buffer is not overwritten in the big loop below
-	strncpy(lstring, lcase(string), sizeof(lstring));
-	lstring[sizeof(lstring) - 1] = '\0';
-
-	const char* lfullname = NULL;
-	const char* lstripname = NULL;
-
+int namematch(std::string find, bool ret_first, int start_after) {
 	int matchid = -1;
 
-	for (int i = start_after + 1; i < MAX_CLIENTS; ++i) {
-		if (!g_playerinfo[i].connected)
+	for (int i = start_after + 1; i < g_playerinfo.size(); i++) {
+		auto& player = g_playerinfo[i];
+		if (!player.connected)
 			continue;
 
 		// on a complete match, return
-		if (!strcmp(string, g_playerinfo[i].name))
+		if (str_striequal(find, g_playerinfo[i].name))
 			return i;
 
-		// try partial matches, if we have 2, cancel
-		lfullname = lcase(g_playerinfo[i].name);
-		lstripname = lcase(g_playerinfo[i].stripname);
-
-		if (strstr(lfullname, lstring) || strstr(lstripname, lstring)) {
+		// try partial matches. cancel if ret_first is false and we found 2 matches
+		if (str_stristr(find, g_playerinfo[i].name) || str_stristr(find, g_playerinfo[i].stripname)) {
 			if (ret_first)
-				return i;
-
-			if (matchid == -1)
-				matchid = i;
-			else
+				return i;			
+			else if (matchid != -1)
 				return -1;
+			matchid = i;
 		}
+
 	}
-	
+
 	return matchid;
 }
+
+
+bool is_valid_map(std::string map) {
+	fileHandle_t fmap;
+#ifdef GAME_MOHAA
+	intptr_t mapsize = g_syscall(G_FS_FOPEN_FILE_QMM, QMM_VARARGS("maps\\%s", map.c_str()), &fmap, FS_READ);
+	g_syscall(G_FS_FCLOSE_FILE_QMM, fmap);
+#else
+	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps\\%s", map.c_str()), &fmap, FS_READ);
+	g_syscall(G_FS_FCLOSE_FILE, fmap);
+#endif
+	return mapsize ? true : false;
+}
+
+
+std::string sanitize(std::string str) {
+	size_t sep = str.find_first_of("\";\\");
+	while (sep != std::string::npos) {
+		str[sep] = ' ';
+		sep = str.find_first_of("\";\\");
+	}
+	return str;
+}
+
 
 
 bool InfoString_Validate(const char* s) {
 	return (strchr(s, '\"') || strchr(s, ';')) ? false : true;
 }
+
 
 int str_stristr(std::string haystack, std::string needle) {
 	for (auto& c : haystack)
@@ -300,4 +211,18 @@ std::vector<std::string> parse_args(int start, int end) {
 	}
 
 	return parse_str(s, ' ');
+}
+
+
+std::string str_join(std::vector<std::string> arr, size_t start, char delim) {
+	bool first = true;
+	std::string ret;
+	for (size_t i = start; i < arr.size(); i++) {
+		if (!first)
+			ret += delim;
+		ret += arr[i];
+		first = false;
+	}
+
+	return ret;
 }

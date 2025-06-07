@@ -16,18 +16,14 @@ Created By:
 #include <string>
 
 bool has_access(int, int);
-int user_with_ip(const char*, int = -1);
-int arrsize(admincmd_t*);
+int player_with_ip(std::string find, int start_after = -1);
 void ClientPrint(int, const char*, bool = 0);
-void KickClient(int, const char*);
-char* concatargs(int);
-char** tok_parse(const char*, char = ' ');
-void tok_free(char**);
-void setcvar(const char*, int);
-const char* StripCodes(const char*);
-const char* lcase(const char*);
-int namematch(const char*, bool = 0, int = -1);
-bool is_valid_map(const char*);
+void KickClient(int slotid, std::string message);
+void setcvar(std::string cvar, std::string value);
+std::string stripcodes(std::string name);
+int namematch(std::string find, bool ret_first = 0, int start_after = -1);
+bool is_valid_map(std::string map);
+std::string sanitize(std::string str);
 
 bool InfoString_Validate(const char*);
 
@@ -37,5 +33,7 @@ int str_striequal(std::string s1, std::string s2);
 
 std::vector<std::string> parse_str(std::string str, char sep = ' ');
 std::vector<std::string> parse_args(int start, int end = -1);
+
+std::string str_join(std::vector<std::string> arr, size_t start = 0, char delim = ' ');
 
 #endif // __QADMIN_QMM_UTIL_H__

@@ -17,9 +17,23 @@ Created By:
 
 #include "main.h"
 
+typedef int (*pfnAdminCmd)(int clientnum, int access, std::vector<std::string> args, bool say);		// signature of a command handler
+
+// command handler info
+typedef struct admincmd_s {
+	const char* cmd;
+	pfnAdminCmd func;
+	int reqaccess;
+	int minargs;
+	const char* usage;
+	const char* help;
+} admincmd_t;
+
+extern std::vector<admincmd_t> g_admincmds;
+extern std::vector<admincmd_t> g_saycmds;
+
 void reload();
-int handlecommand(int, int);
-int handlecommand(int, std::vector<std::string>);
-int admin_adduser(addusertype_t type);
+int handlecommand(int clientnum, std::vector<std::string> args);
+int admin_adduser(addusertype_t type, std::vector<std::string> args);
 
 #endif // __QADMIN_QMM_UTIL_H__

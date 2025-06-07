@@ -51,8 +51,6 @@ std::vector<userinfo_t> g_userinfo;
 
 intptr_t g_maxuserinfo = -1;
 
-int g_defaultAccess = 1;
-
 time_t g_mapstart;
 int g_levelTime;
 
@@ -91,29 +89,26 @@ C_DLLEXPORT void QMM_Detach() {
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	intptr_t arg0 = args[0];
 
-	// get client info on connection (moved to Post)
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
 		g_playerinfo[arg0] = {};
 		
 	// handle client commands
 	} else if (cmd == GAME_CLIENT_COMMAND) {
-		std::vector<std::string> args = parse_args(0);
-		return handlecommand(arg0, args);
-		return handlecommand((int)arg0, 0);
+		return handlecommand(arg0, parse_args(0));
 
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	} else if (cmd == GAME_CONSOLE_COMMAND) {
 		char command[MAX_COMMAND_LENGTH];
 		QMM_ARGV(0, command, sizeof(command));
 		if (!_stricmp(command, "admin_cmd") || !_stricmp(command, "a_c"))
-			return handlecommand(SERVER_CONSOLE, 1);
+			return handlecommand(SERVER_CONSOLE, parse_args(1));
 		else if (!_stricmp(command, "admin_adduser_ip"))
-			return admin_adduser(au_ip);
+			return admin_adduser(au_ip, parse_args(0));
 		else if (!_stricmp(command, "admin_adduser_name"))
-			return admin_adduser(au_name);
+			return admin_adduser(au_name, parse_args(0));
 		else if (!_stricmp(command, "admin_adduser_id"))
-			return admin_adduser(au_id);
+			return admin_adduser(au_id, parse_args(0));
 
 	// handle the game initialization (independent of mod being loaded)
 	} else if (cmd == GAME_INIT) {
@@ -138,8 +133,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	intptr_t arg0 = args[0];
 
 	// save client data on connection
-	// (this is here so that the game has a chance to do various info checking before
-	// we get the values)
+	// (this is here in _Post so that the game has a chance to do various info checking before we get the values)
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
 		char userinfo[MAX_INFO_STRING];
 		g_syscall(G_GET_USERINFO, arg0, userinfo, sizeof(userinfo));
@@ -148,19 +142,16 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 			QMM_RET_IGNORED(1);
 
 		if (cmd == GAME_CLIENT_CONNECT) {
-			memset(&g_playerinfo[arg0], 0, sizeof(g_playerinfo[arg0]));
-			g_playerinfo[arg0].connected = 1;
-			g_playerinfo[arg0].access = g_defaultAccess;
+			g_playerinfo[arg0] = {};
+			g_playerinfo[arg0].connected = true;
+			g_playerinfo[arg0].access = 0;
 		}
 
-		strncpy(g_playerinfo[arg0].ip, QMM_INFOVALUEFORKEY(userinfo, "ip"), sizeof(g_playerinfo[arg0].ip));
-		// if a situation arises where the ip is exactly 15 bytes long, the 16th byte
-		// in the buffer will be ':', so this will terminate the string anyway
-		char* temp = strstr(g_playerinfo[arg0].ip, ":");
-		if (temp) *temp = '\0';
-		strncpy(g_playerinfo[arg0].guid, QMM_INFOVALUEFORKEY(userinfo, "cl_guid"), sizeof(g_playerinfo[arg0].guid));
-		strncpy(g_playerinfo[arg0].name, QMM_INFOVALUEFORKEY(userinfo, "name"), sizeof(g_playerinfo[arg0].name));
-		strncpy(g_playerinfo[arg0].stripname, StripCodes(g_playerinfo[arg0].name), sizeof(g_playerinfo[arg0].stripname));
+		std::string ip = QMM_INFOVALUEFORKEY(userinfo, "ip");
+		g_playerinfo[arg0].ip = ip.substr(0, ip.find(':'));
+		g_playerinfo[arg0].guid = QMM_INFOVALUEFORKEY(userinfo, "cl_guid");
+		g_playerinfo[arg0].name = QMM_INFOVALUEFORKEY(userinfo, "name");
+		g_playerinfo[arg0].stripname = stripcodes(g_playerinfo[arg0].name);
 
 	// handle the game initialization (dependent on mod being loaded)
 	} else if (cmd == GAME_INIT) {

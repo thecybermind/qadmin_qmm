@@ -27,8 +27,8 @@ typedef struct voteinfo_s {
 } voteinfo_t;
 extern voteinfo_t g_vote;
 
-void vote_start(int, pfnVoteFunc, int, int, void*);
-void vote_add(int, int);
+void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, void* param);
+void vote_add(int clientnum, int vote);
 void vote_finish();
 
 #endif // __QADMIN_QMM_VOTE_H__

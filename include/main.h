@@ -20,14 +20,6 @@ Created By:
 #define MAX_COMMAND_LENGTH 64
 #define MAX_NUMBER_LENGTH 11
 
-#define MAX_USER_ENTRIES 64
-
-// MAX_NETNAME = (35 + 1)
-#define MAX_USER_LENGTH MAX_NETNAME
-#define MAX_GUID_LENGTH 32 + 1
-#define MAX_PASS_LENGTH 32 + 1
-#define MAX_IP_LENGTH 15 + 1
-
 #define SERVER_CONSOLE -2
 
 typedef enum addusertype_e {
@@ -62,36 +54,21 @@ typedef enum addusertype_e {
 
 #define ACCESS_IMMUNITY	LEVEL_1024
 
-typedef int (*pfnAdminCmd)(int,int,int);		// signature of a command handler
-
-// command handler info
-typedef struct admincmd_s {
-	const char* cmd;
-	pfnAdminCmd func;
-	int reqaccess;
-	int minargs;
-	const char* usage;
-	const char* help;
-} admincmd_t;
-
-extern admincmd_t g_admincmds[];
-extern admincmd_t g_saycmds[];
-
 typedef struct playerinfo_s {
-	char guid[MAX_GUID_LENGTH];
-	char ip[MAX_IP_LENGTH];
-	char name[MAX_NETNAME];
-	char stripname[MAX_NETNAME];
-	int access;
-	bool authed;
-	bool gagged;
-	bool connected;
+	std::string guid;
+	std::string ip;
+	std::string name;
+	std::string stripname;
+	int access = 0;
+	bool authed = false;
+	bool gagged = false;
+	bool connected = false;
 } playerinfo_t;
 extern std::vector<playerinfo_t> g_playerinfo;
 
 typedef struct userinfo_s {
-	char user[MAX_USER_LENGTH];
-	char pass[MAX_PASS_LENGTH];
+	std::string user;
+	std::string pass;
 	int access;
 	addusertype_t type;
 } userinfo_t;
@@ -101,9 +78,6 @@ extern gentity_t* g_gents;
 extern int g_gentsize;
 
 extern std::vector<userinfo_t> g_userinfo;
-extern intptr_t g_maxuserinfo;
-
-extern int g_defaultAccess;
 
 extern time_t g_mapstart;
 extern int g_levelTime;
