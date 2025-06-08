@@ -37,6 +37,7 @@ void reload() {
 }
 
 
+#define usertype(x) 
 // server command to add a new user
 int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	if (args.size() < 4) {
@@ -47,10 +48,12 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	std::string pass = args[2];
 	int access = atoi(args[3].c_str());
 
+	const char* strtype = (type == au_ip ? "IP" : (type == au_name ? "name" : "ID"));
+
 	int i = 0;
 	for (auto& info : g_userinfo) {
 		if (info.type == type && str_striequal(user, info.user)) {
-			QMM_WRITEQMMLOG(QMM_VARARGS("User %s entry already exists for \"%s\"\n", usertype(type), user.c_str()), QMMLOG_INFO, "QADMIN");
+			QMM_WRITEQMMLOG(QMM_VARARGS("User %s entry already exists for \"%s\"\n", strtype, user.c_str()), QMMLOG_INFO, "QADMIN");
 			QMM_RET_SUPERCEDE(1);
 		}
 	}
@@ -58,7 +61,7 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	userinfo_t newuser = { user, pass, access, type };
 	g_userinfo.push_back(newuser);
 
-	QMM_WRITEQMMLOG(QMM_VARARGS("New user %s entry added for \"%s\" (access=%d)\n", usertype(type), user.c_str(), access), QMMLOG_INFO, "QADMIN");
+	QMM_WRITEQMMLOG(QMM_VARARGS("New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access), QMMLOG_INFO, "QADMIN");
 	QMM_RET_SUPERCEDE(1);
 }
 

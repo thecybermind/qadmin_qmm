@@ -89,15 +89,13 @@ C_DLLEXPORT void QMM_Detach() {
 
 // called before mod's vmMain (engine->mod)
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
-	int arg0 = (int)args[0];
-
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 		gentity_t* ent = (gentity_t*)(args[0]);
 		int arg0 = ent->s.number;
 #endif
-		g_playerinfo[arg0] = {};
+		g_playerinfo[args[0]] = {};
 	}
 	// handle client commands
 	else if (cmd == GAME_CLIENT_COMMAND) {
@@ -105,7 +103,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		gentity_t* ent = (gentity_t*)(args[0]);
 		int arg0 = ent->s.number;
 #endif
-		return handlecommand(arg0, parse_args(0));
+		return handlecommand(args[0], parse_args(0));
 	}
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	else if (cmd == GAME_CONSOLE_COMMAND) {
@@ -121,18 +119,18 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 			return admin_adduser(au_id, parse_args(0));
 	}
 	else if (cmd == GAME_INIT) {
-#ifdef GAME_NO_LEVELTIME
 		time(&g_mapstart);
-		time(&g_levelTime);
+#ifdef GAME_NO_LEVELTIME
+		time((time_t*)&g_levelTime);
 #else
-		g_levelTime = arg0;
+		g_levelTime = args[0];
 #endif
 	}
 	else if (cmd == GAME_RUN_FRAME) {
 #ifdef GAME_NO_LEVELTIME
-		time(&g_levelTime);
+		time((time_t*)&g_levelTime);
 #else
-		g_levelTime = arg0;
+		g_levelTime = args[0];
 #endif
 
 		if (g_vote.inuse && g_levelTime >= g_vote.finishtime)

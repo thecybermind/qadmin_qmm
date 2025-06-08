@@ -73,7 +73,6 @@ typedef struct userinfo_s {
 	int access;
 	addusertype_t type;
 } userinfo_t;
-#define usertype(x) (x==au_ip?"IP":(x==au_name?"name":"ID"))
 
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 extern gentity_t* g_gents;
