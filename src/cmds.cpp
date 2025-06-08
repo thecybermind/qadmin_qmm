@@ -75,7 +75,7 @@ int handlecommand(int clientnum, std::vector<std::string> args) {
 	for (auto& admincmd : g_admincmds) {
 		if (str_striequal(admincmd.cmd, cmd)) {
 			// if the client has access, run handler func (get return value, func will set result flag)
-			if (has_access(clientnum, admincmd.reqaccess)) {
+			if (player_has_access(clientnum, admincmd.reqaccess)) {
 				// only run handler func if we provided enough args
 				// otherwise, show the help entry
 				if (g_syscall(G_ARGC) < (admincmd.minargs + 1)) {
@@ -133,7 +133,7 @@ int admin_help(int clientnum, int access, std::vector<std::string> args, bool sa
 
 	for (auto& cmd : g_admincmds) {
 		// make sure the command help exists and the user has enough access
-		if (has_access(clientnum, cmd.reqaccess) && cmd.usage && cmd.usage[0] && cmd.help && cmd.help[0]) {
+		if (player_has_access(clientnum, cmd.reqaccess) && cmd.usage && cmd.usage[0] && cmd.help && cmd.help[0]) {
 			// if the command is within our display range
 			if (count_cmd >= start && count_cmd <= (start + 9)) {
 				ClientPrint(clientnum, QMM_VARARGS("[QADMIN] %d. %s - %s\n", count_show, cmd.usage, cmd.help));
@@ -276,13 +276,13 @@ int admin_ban(int clientnum, int access, std::vector<std::string> args, bool say
 		}
 		
 		// check if the desired user has immunity
-		if (has_access(slotid, ACCESS_IMMUNITY)) {
+		if (player_has_access(slotid, ACCESS_IMMUNITY)) {
 			ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Cannot ban %s, user has immunity.\n", g_playerinfo[slotid].name.c_str()));
 			QMM_RET_SUPERCEDE(1);
 		}
 
 		// check if other users have the same IP as the desired user
-		bool immunity = 0;
+		bool immunity = false;
 		
 		// find users who have the given IP
 		int finduser = player_with_ip(g_playerinfo[slotid].ip);
@@ -290,8 +290,8 @@ int admin_ban(int clientnum, int access, std::vector<std::string> args, bool say
 		// loop until no more users have the IP
 		while (finduser != -1) {
 			// if this user has immunity, set the flag
-			if (has_access(finduser, ACCESS_IMMUNITY)) {
-				immunity = 1;
+			if (player_has_access(finduser, ACCESS_IMMUNITY)) {
+				immunity = true;
 				break;
 			}
 
@@ -317,7 +317,7 @@ int admin_ban(int clientnum, int access, std::vector<std::string> args, bool say
 		// loop until no more users have the IP
 		while (finduser != -1) {
 			// if this user does not have immunity, kick him
-			if (!has_access(finduser, ACCESS_IMMUNITY))
+			if (!player_has_access(finduser, ACCESS_IMMUNITY))
 				KickClient(finduser, message);
 
 			// get next user with IP
@@ -333,7 +333,7 @@ int admin_ban(int clientnum, int access, std::vector<std::string> args, bool say
 		int finduser = player_with_ip(user);
 		while (finduser != -1) {
 			// if this user has immunity, set the flag
-			if (has_access(finduser, ACCESS_IMMUNITY)) {
+			if (player_has_access(finduser, ACCESS_IMMUNITY)) {
 				immunity = true;
 				break;
 			}
@@ -355,7 +355,7 @@ int admin_ban(int clientnum, int access, std::vector<std::string> args, bool say
 		finduser = player_with_ip(user);
 		while (finduser != -1) {
 			// if this user does not have immunity, kick him
-			if (!has_access(finduser, ACCESS_IMMUNITY))
+			if (!player_has_access(finduser, ACCESS_IMMUNITY))
 				KickClient(finduser, message);
 			finduser = player_with_ip(user, finduser);
 		}
@@ -394,28 +394,28 @@ int admin_rcon(int clientnum, int access, std::vector<std::string> args, bool sa
 
 
 int admin_hostname(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("sv_hostname", args[1]);
+	g_syscall(G_CVAR_SET, "sv_hostname", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_friendlyfire(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("g_friendlyfire", args[1]);
+	g_syscall(G_CVAR_SET, "g_friendlyfire", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_gravity(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("g_gravity", args[1]);
+	g_syscall(G_CVAR_SET, "g_gravity", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_gametype(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("g_gametype", args[1]);
+	g_syscall(G_CVAR_SET, "g_gametype", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -430,14 +430,14 @@ int admin_map(int clientnum, int access, std::vector<std::string> args, bool say
 
 
 int admin_fraglimit(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("fraglimit", args[1]);
+	g_syscall(G_CVAR_SET, "fraglimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_timelimit(int clientnum, int access, std::vector<std::string> args, bool say) {
-	setcvar("timelimit", args[1]);
+	g_syscall(G_CVAR_SET, "timelimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -445,9 +445,10 @@ int admin_timelimit(int clientnum, int access, std::vector<std::string> args, bo
 
 int admin_pass(int clientnum, int access, std::vector<std::string> args, bool say) {
 	if (str_striequal(args[0], "admin_pass")) {
-		setcvar("g_password", args[1]);
+		g_syscall(G_CVAR_SET, "g_password", args[1].c_str());
 		g_syscall(G_CVAR_SET, "g_needpass", "1");
 	} else if (str_striequal(args[0], "admin_nopass")) {
+		g_syscall(G_CVAR_SET, "g_password", "");
 		g_syscall(G_CVAR_SET, "g_needpass", "0");
 	}
 
@@ -458,7 +459,7 @@ int admin_pass(int clientnum, int access, std::vector<std::string> args, bool sa
 int admin_chat(int clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = sanitize(str_join(args, 1));
 	for (int i = 0; i < MAX_CLIENTS; ++i) {
-		if (has_access(i, access))
+		if (player_has_access(i, access))
 			ClientPrint(i, QMM_VARARGS("To Admins From %s: %s", clientnum == SERVER_CONSOLE ? "Console" : g_playerinfo[clientnum].name.c_str(), message.c_str()), true);
 	}
 
@@ -545,7 +546,7 @@ int admin_kick(int clientnum, int access, std::vector<std::string> args, bool sa
 		}
 	}
 
-	if (has_access(slotid, ACCESS_IMMUNITY)) {
+	if (player_has_access(slotid, ACCESS_IMMUNITY)) {
 		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[slotid].name.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
@@ -573,7 +574,7 @@ int admin_userlist(int clientnum, int access, std::vector<std::string> args, boo
 	if (args.size() > 1)
 		match = args[1];
 
-	int banaccess = has_access(clientnum, LEVEL_256);
+	int banaccess = player_has_access(clientnum, LEVEL_256);
 
 	// if a parameter was given, only display users matching it
 	if (args.size() > 1) {
@@ -638,7 +639,7 @@ int admin_gag(int clientnum, int access, std::vector<std::string> args, bool say
 		}
 	}
 
-	if (has_access(slotid, ACCESS_IMMUNITY)) {
+	if (player_has_access(slotid, ACCESS_IMMUNITY)) {
 		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Cannot gag %s, user has immunity\n", g_playerinfo[slotid].name.c_str()));
 	}
 	else if (g_playerinfo[slotid].gagged) {
@@ -745,7 +746,7 @@ void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
 	
 	// user may have authed and gotten immunity during the vote,
 	// but don't mention it, just make the vote fail
-	if (has_access(slotid, ACCESS_IMMUNITY))
+	if (player_has_access(slotid, ACCESS_IMMUNITY))
 		winner = 0;
 
 	if (winner == 1 && winvotes) {
@@ -771,7 +772,7 @@ int admin_vote_kick(int clientnum, int access, std::vector<std::string> args, bo
 	// cannot votekick a user with immunity
 	// the user's immunity is also checked in the vote
 	// handler in case he auths before the vote ends
-	if (has_access(slotid, ACCESS_IMMUNITY)) {
+	if (player_has_access(slotid, ACCESS_IMMUNITY)) {
 		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[slotid].name.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
@@ -813,7 +814,7 @@ int say(int clientnum, int access, std::vector<std::string> args, bool say) {
 		// if we found the command
 		if (str_striequal(saycmd.cmd, command)) {
 			// if the client has access, run handler func (get return value, func will set result flag)
-			if (has_access(clientnum, saycmd.reqaccess)) {
+			if (player_has_access(clientnum, saycmd.reqaccess)) {
 				// only run handler func if we provided enough args
 				if (args.size() < (saycmd.minargs + 1))
 					QMM_RET_IGNORED(0);

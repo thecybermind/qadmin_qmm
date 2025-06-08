@@ -15,17 +15,14 @@ Created By:
 #include <vector>
 #include <string>
 
-bool has_access(int, int);
+bool player_has_access(int clientnum, int reqaccess);
 int player_with_ip(std::string find, int start_after = -1);
-void ClientPrint(int, const char*, bool = 0);
+void ClientPrint(int clientnum, const char* msg, bool chat = false);
 void KickClient(int slotid, std::string message);
-void setcvar(std::string cvar, std::string value);
-std::string stripcodes(std::string name);
-int namematch(std::string find, bool ret_first = 0, int start_after = -1);
+std::string strip_codes(std::string name);
+int player_with_name(std::string find, bool ret_first = 0, int start_after = -1);
 bool is_valid_map(std::string map);
-std::string sanitize(std::string str);
-
-bool InfoString_Validate(const char*);
+std::string str_sanitize(std::string str);
 
 int str_stristr(std::string haystack, std::string needle);
 int str_stricmp(std::string s1, std::string s2);

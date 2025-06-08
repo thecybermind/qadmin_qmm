@@ -30,12 +30,12 @@ Created By:
  #endif
 #endif
 
-bool has_access(int clientnum, int reqaccess) {
+bool player_has_access(int clientnum, int reqaccess) {
 	if (clientnum == SERVER_CONSOLE)
-		return 1;
+		return true;
 	
 	if (clientnum < 0 || clientnum >= MAX_CLIENTS)
-		return 0;
+		return false;
 
 	int defaccess = (int)QMM_GETINTCVAR("admin_default_access");
 
@@ -55,7 +55,7 @@ int player_with_ip(std::string find, int start_after) {
 }
 
 
-void ClientPrint(int clientnum, const char* msg, bool chat) {
+void player_clientprint(int clientnum, const char* msg, bool chat) {
 	if (clientnum == SERVER_CONSOLE)
 		g_syscall(G_PRINT, msg);
 	else {
@@ -71,7 +71,7 @@ void ClientPrint(int clientnum, const char* msg, bool chat) {
 }
 
 
-void KickClient(int slotid, std::string message) {
+void player_kick(int slotid, std::string message) {
 #ifdef GAME_NO_DROP_CLIENT
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("kick %d\n", slotid));
 #else
@@ -80,17 +80,11 @@ void KickClient(int slotid, std::string message) {
 }
 
 
-void setcvar(std::string cvar, std::string value) {
-	g_syscall(G_CVAR_SET, cvar.c_str(), value.c_str());
-}
-
-
-std::string stripcodes(std::string name) {
+std::string strip_codes(std::string name) {
 #ifdef GAME_NO_NAME_COLOR
 	return name;
 #else
 	std::string ret;
-	bool is_escape = false;
 	for (size_t i = 0; i < name.size(); ++i) {
 		if (name[i] == Q_COLOR_ESCAPE) {
 			if (name[i + 1] != Q_COLOR_ESCAPE)
@@ -107,7 +101,7 @@ std::string stripcodes(std::string name) {
 
 // returns index of matching name
 // -1 when ambiguous or not found
-int namematch(std::string find, bool ret_first, int start_after) {
+int player_with_name(std::string find, bool ret_first, int start_after) {
 	int matchid = -1;
 
 	for (int i = start_after + 1; i < g_playerinfo.size(); i++) {
@@ -147,19 +141,13 @@ bool is_valid_map(std::string map) {
 }
 
 
-std::string sanitize(std::string str) {
+std::string str_sanitize(std::string str) {
 	size_t sep = str.find_first_of("\";\\");
 	while (sep != std::string::npos) {
 		str[sep] = ' ';
 		sep = str.find_first_of("\";\\");
 	}
 	return str;
-}
-
-
-
-bool InfoString_Validate(const char* s) {
-	return (strchr(s, '\"') || strchr(s, ';')) ? false : true;
 }
 
 

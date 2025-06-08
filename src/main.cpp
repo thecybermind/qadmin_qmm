@@ -157,8 +157,6 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		char userinfo[MAX_INFO_STRING];
 		g_syscall(G_GET_USERINFO, arg0, userinfo, sizeof(userinfo));
 #endif
-		if (!InfoString_Validate(userinfo))
-			QMM_RET_IGNORED(1);
 
 		playerinfo_t& info = g_playerinfo[arg0];
 		if (cmd == GAME_CLIENT_CONNECT) {
@@ -171,7 +169,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		info.ip = ip.substr(0, ip.find(':'));
 		info.guid = QMM_INFOVALUEFORKEY(userinfo, "cl_guid");
 		info.name = QMM_INFOVALUEFORKEY(userinfo, "name");
-		info.stripname = stripcodes(info.name);
+		info.stripname = strip_codes(info.name);
 
 	}
 	// handle the game initialization (dependent on mod being loaded)
