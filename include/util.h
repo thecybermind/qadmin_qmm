@@ -17,8 +17,8 @@ Created By:
 
 bool player_has_access(int clientnum, int reqaccess);
 int player_with_ip(std::string find, int start_after = -1);
-void ClientPrint(int clientnum, const char* msg, bool chat = false);
-void KickClient(int slotid, std::string message);
+void player_clientprint(int clientnum, const char* msg, bool chat = false);
+void player_kick(int slotid, std::string message);
 std::string strip_codes(std::string name);
 int player_with_name(std::string find, bool ret_first = 0, int start_after = -1);
 bool is_valid_map(std::string map);

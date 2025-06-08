@@ -28,7 +28,7 @@ voteinfo_t g_vote;
 // initiate a vote
 void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param) {
 	if (g_vote.inuse) {
-		ClientPrint(clientnum, "[QADMIN] A vote is already running\n");
+		player_clientprint(clientnum, "[QADMIN] A vote is already running\n");
 		return;
 	}
 	g_vote.clientnum = clientnum;
@@ -44,22 +44,22 @@ void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choic
 // someone has voted (vote should be 1-9)
 void vote_add(int clientnum, int vote) {
 	if (!g_vote.inuse) {
-		ClientPrint(clientnum, "[QADMIN] There is no vote currently running\n");
+		player_clientprint(clientnum, "[QADMIN] There is no vote currently running\n");
 		return;
 	}
 
 	if (g_vote.votes[clientnum]) {
-		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] You have already voted for %d\n", g_vote.votes[clientnum]));
+		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You have already voted for %d\n", g_vote.votes[clientnum]));
 		return;
 	}
 
 	if (vote <= 0 || vote > g_vote.choices) {
-		ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Invalid vote option, choose from 1-%d\n", g_vote.choices));
+		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Invalid vote option, choose from 1-%d\n", g_vote.choices));
 		return;
 	}
 
 	g_vote.votes[clientnum] = vote;
-	ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Vote counted for %d\n", vote));
+	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Vote counted for %d\n", vote));
 }
 
 
