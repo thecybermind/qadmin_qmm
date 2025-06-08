@@ -15,6 +15,8 @@ Created By:
 #include <vector>
 #include <string>
 
+#include "game.h"
+
 #define MAX_STRING_LENGTH 1024
 #define MAX_DATA_LENGTH 200
 #define MAX_COMMAND_LENGTH 64
@@ -64,7 +66,6 @@ typedef struct playerinfo_s {
 	bool gagged = false;
 	bool connected = false;
 } playerinfo_t;
-extern std::vector<playerinfo_t> g_playerinfo;
 
 typedef struct userinfo_s {
 	std::string user;
@@ -74,13 +75,16 @@ typedef struct userinfo_s {
 } userinfo_t;
 #define usertype(x) (x==au_ip?"IP":(x==au_name?"name":"ID"))
 
+#ifdef GAME_NO_SEND_SERVER_COMMAND
 extern gentity_t* g_gents;
-extern int g_gentsize;
+extern intptr_t g_gentsize;
+#endif
 
+extern std::vector<playerinfo_t> g_playerinfo;
 extern std::vector<userinfo_t> g_userinfo;
 
 extern time_t g_mapstart;
-extern int g_levelTime;
+extern intptr_t g_levelTime;
 
 extern std::vector<std::string> g_gaggedCmds;
 

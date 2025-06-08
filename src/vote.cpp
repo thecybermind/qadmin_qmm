@@ -24,8 +24,9 @@ Created By:
 
 voteinfo_t g_vote;
 
+
 // initiate a vote
-void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, void* param) {
+void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param) {
 	if (g_vote.inuse) {
 		ClientPrint(clientnum, "[QADMIN] A vote is already running\n");
 		return;
@@ -35,9 +36,10 @@ void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, v
 	g_vote.finishtime = g_levelTime + (seconds * 1000);
 	g_vote.choices = choices;
 	g_vote.param = param;
-	g_vote.inuse = 1;
+	g_vote.inuse = true;
 	memset(g_vote.votes, 0, sizeof(g_vote.votes));
 }
+
 
 // someone has voted (vote should be 1-9)
 void vote_add(int clientnum, int vote) {
@@ -59,6 +61,7 @@ void vote_add(int clientnum, int vote) {
 	g_vote.votes[clientnum] = vote;
 	ClientPrint(clientnum, QMM_VARARGS("[QADMIN] Vote counted for %d\n", vote));
 }
+
 
 // vote has ended
 void vote_finish() {

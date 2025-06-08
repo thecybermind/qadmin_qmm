@@ -37,7 +37,9 @@ bool has_access(int clientnum, int reqaccess) {
 	if (clientnum < 0 || clientnum >= MAX_CLIENTS)
 		return 0;
 
-	int access = g_playerinfo[clientnum].access | QMM_GETINTCVAR("admin_default_access");
+	int defaccess = (int)QMM_GETINTCVAR("admin_default_access");
+
+	int access = g_playerinfo[clientnum].access | defaccess;
 
 	return (access & reqaccess) == reqaccess;
 }
@@ -84,6 +86,9 @@ void setcvar(std::string cvar, std::string value) {
 
 
 std::string stripcodes(std::string name) {
+#ifdef GAME_NO_NAME_COLOR
+	return name;
+#else
 	std::string ret;
 	bool is_escape = false;
 	for (size_t i = 0; i < name.size(); ++i) {
@@ -96,6 +101,7 @@ std::string stripcodes(std::string name) {
 	}
 
 	return ret;
+#endif
 }
 
 
@@ -198,7 +204,7 @@ std::vector<std::string> parse_str(std::string str, char sep) {
 
 std::vector<std::string> parse_args(int start, int end) {
 	if (end < 0)
-		end = g_syscall(G_ARGC);
+		end = (int)g_syscall(G_ARGC);
 
 	char temp[MAX_STRING_LENGTH];
 	std::string s;

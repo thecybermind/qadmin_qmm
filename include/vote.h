@@ -18,7 +18,7 @@ typedef void (*pfnVoteFunc)(int winner, int winvotes, int totalvotes, void* para
 
 typedef struct voteinfo_s {
 	bool inuse;
-	int finishtime;
+	intptr_t finishtime;
 	pfnVoteFunc votefunc;
 	int choices;
 	void* param;
@@ -27,7 +27,7 @@ typedef struct voteinfo_s {
 } voteinfo_t;
 extern voteinfo_t g_vote;
 
-void vote_start(int clientnum, pfnVoteFunc callback, int seconds, int choices, void* param);
+void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param);
 void vote_add(int clientnum, int vote);
 void vote_finish();
 
