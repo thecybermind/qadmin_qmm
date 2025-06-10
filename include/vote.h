@@ -14,6 +14,7 @@ Created By:
 
 #define MAX_CHOICES 9
 
+#include <map>
 #include <time.h>
 
 typedef void (*pfnVoteFunc)(int winner, int winvotes, int totalvotes, void* param);
@@ -25,7 +26,7 @@ typedef struct voteinfo_s {
 	int choices;
 	void* param;
 	int clientnum;
-	int votes[MAX_CLIENTS];
+	std::map<int, int> votes;	// votecount[clientnum] = choice
 } voteinfo_t;
 extern voteinfo_t g_vote;
 

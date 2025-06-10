@@ -37,7 +37,7 @@ void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choic
 	g_vote.choices = choices;
 	g_vote.param = param;
 	g_vote.inuse = true;
-	memset(g_vote.votes, 0, sizeof(g_vote.votes));
+	g_vote.votes.clear();
 }
 
 
@@ -48,12 +48,12 @@ void vote_add(int clientnum, int vote) {
 		return;
 	}
 
-	if (g_vote.votes[clientnum]) {
+	if (g_vote.votes.count(clientnum)) {
 		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You have already voted for %d\n", g_vote.votes[clientnum]));
 		return;
 	}
 
-	if (vote <= 0 || vote > g_vote.choices) {
+	if (vote < 1 || vote > g_vote.choices) {
 		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Invalid vote option, choose from 1-%d\n", g_vote.choices));
 		return;
 	}
@@ -65,27 +65,22 @@ void vote_add(int clientnum, int vote) {
 
 // vote has ended
 void vote_finish() {
-	int winner = 0, totalvotes = 0, i;
-	int votecount[MAX_CHOICES];
-	memset(votecount, 0, sizeof(votecount));
+	int winner = 0;
+	int totalvotes = g_vote.votes.size();
+	std::map<int, int> votecount;	// votecount[choice] = numvotes
 
 	// tally up the votes
-	// g_vote.votes[] stores 1-9, so subtract 1 to get proper votecount index
-	for (i = 0; i < MAX_CLIENTS; ++i) {
-		if (!g_vote.votes[i])
-			continue;
-		
-		++totalvotes;
-		++votecount[g_vote.votes[i] - 1];
+	for (auto& vote : g_vote.votes) {
+		votecount[vote.second]++;
 	}
 
 	// figure out which choice won
-	for (i = 0; i < MAX_CHOICES; ++i) {
-		if (votecount[i] > votecount[winner])
-			winner = i;
+	for (auto& vote : votecount) {
+		if (vote.second > votecount[winner])
+			winner = vote.first;
 	}
 
 	// if the winning votecount is 0 (no one voted), then give winner as 0
-	g_vote.votefunc(votecount[winner] ? winner + 1 : 0, votecount[winner], totalvotes, g_vote.param);
+	g_vote.votefunc(winner, votecount[winner], totalvotes, g_vote.param);
 	g_vote.inuse = 0;
 }
