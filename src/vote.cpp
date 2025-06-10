@@ -65,8 +65,7 @@ void vote_add(int clientnum, int vote) {
 
 // vote has ended
 void vote_finish() {
-	int winner = 0;
-	int totalvotes = g_vote.votes.size();
+	int winner = 0;					// winning choice
 	std::map<int, int> votecount;	// votecount[choice] = numvotes
 
 	// tally up the votes
@@ -81,6 +80,6 @@ void vote_finish() {
 	}
 
 	// if the winning votecount is 0 (no one voted), then give winner as 0
-	g_vote.votefunc(winner, votecount[winner], totalvotes, g_vote.param);
+	g_vote.votefunc(winner, votecount[winner], g_vote.votes.size(), g_vote.param);
 	g_vote.inuse = 0;
 }
