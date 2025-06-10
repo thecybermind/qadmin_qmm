@@ -83,7 +83,7 @@ extern std::vector<playerinfo_t> g_playerinfo;
 extern std::vector<userinfo_t> g_userinfo;
 
 extern time_t g_mapstart;
-extern intptr_t g_levelTime;
+extern time_t g_leveltime;
 
 extern std::vector<std::string> g_gaggedCmds;
 

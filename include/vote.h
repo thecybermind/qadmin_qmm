@@ -14,11 +14,13 @@ Created By:
 
 #define MAX_CHOICES 9
 
+#include <time.h>
+
 typedef void (*pfnVoteFunc)(int winner, int winvotes, int totalvotes, void* param);
 
 typedef struct voteinfo_s {
 	bool inuse;
-	intptr_t finishtime;
+	time_t finishtime;
 	pfnVoteFunc votefunc;
 	int choices;
 	void* param;

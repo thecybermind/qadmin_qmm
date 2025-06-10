@@ -50,7 +50,7 @@ intptr_t g_gentsize = sizeof(gentity_t);
 #endif
 
 time_t g_mapstart;
-intptr_t g_levelTime;
+time_t g_leveltime;
 
 std::vector<std::string> g_gaggedCmds;
 
@@ -120,20 +120,12 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	}
 	else if (cmd == GAME_INIT) {
 		time(&g_mapstart);
-#ifdef GAME_NO_LEVELTIME
-		time((time_t*)&g_levelTime);
-#else
-		g_levelTime = args[0];
-#endif
+		time(&g_leveltime);
 	}
 	else if (cmd == GAME_RUN_FRAME) {
-#ifdef GAME_NO_LEVELTIME
-		time((time_t*)&g_levelTime);
-#else
-		g_levelTime = args[0];
-#endif
+		time(&g_leveltime);
 
-		if (g_vote.inuse && g_levelTime >= g_vote.finishtime)
+		if (g_vote.inuse && g_leveltime >= g_vote.finishtime)
 			vote_finish();
 	}
 

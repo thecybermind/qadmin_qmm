@@ -30,47 +30,37 @@ Created By:
     #include <stef2/game/g_local.h>
     #include <stef2/game/bg_public.h>
     #include <game_stef2.h>
-    #define GAME_NO_DROP_CLIENT
 #elif defined(GAME_MOHAA)
     #include <mohaa/fgame/g_local.h>
     #include <mohaa/fgame/bg_public.h>
     #include <game_mohaa.h>
-    #define GAME_NO_DROP_CLIENT
     #define GAME_NO_FS_GETFILELIST
     #define GAME_CLIENT_USERINFO_CHANGED GAME_CLIENT_USERINFOCHANGED
 #elif defined(GAME_MOHSH)
     #include <mohsh/fgame/g_local.h>
     #include <mohsh/fgame/bg_public.h>
     #include <game_mohsh.h>
-    #define GAME_NO_DROP_CLIENT
     #define GAME_NO_FS_GETFILELIST
-    #define GAME_CLIENT_USERINFO_CHANGED GAME_CLIENT_USERINFOCHANGED
 #elif defined(GAME_MOHBT)
     #include <mohaa/fgame/g_local.h>
     #include <mohaa/fgame/bg_public.h>
     #include <game_mohbt.h>
-    #define GAME_NO_DROP_CLIENT
     #define GAME_NO_FS_GETFILELIST
-    #define GAME_CLIENT_USERINFO_CHANGED GAME_CLIENT_USERINFOCHANGED
 #elif defined(GAME_QUAKE2)
     #include <quake2/game/g_local.h>
     #include <game_quake2.h>
     #define GAME_NO_NAME_COLOR
     #define GAME_NO_SEND_SERVER_COMMAND
-    #define GAME_NO_DROP_CLIENT
     #define GAME_NO_FS_GETFILELIST
     #define GAME_NO_GET_USERINFO
-    #define GAME_NO_LEVELTIME
     typedef edict_t gentity_t;
 #elif defined(GAME_Q2R)
     #include <q2r/rerelease/g_local.h>
     #include <game_q2r.h>
     #define GAME_NO_NAME_COLOR
     #define GAME_NO_SEND_SERVER_COMMAND
-    #define GAME_NO_DROP_CLIENT
     #define GAME_NO_FS_GETFILELIST
     #define GAME_NO_GET_USERINFO
-    #define GAME_NO_LEVELTIME
     #define G_CPRINTF G_CLIENT_PRINT
     typedef edict_t gentity_t;
 #elif defined(GAME_SOF2MP)
