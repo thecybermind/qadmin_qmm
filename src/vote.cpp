@@ -80,6 +80,6 @@ void vote_finish() {
 	}
 
 	// if the winning votecount is 0 (no one voted), then give winner as 0
-	g_vote.votefunc(winner, votecount[winner], g_vote.votes.size(), g_vote.param);
+	g_vote.votefunc(winner, votecount[winner], (int)g_vote.votes.size(), g_vote.param);
 	g_vote.inuse = 0;
 }

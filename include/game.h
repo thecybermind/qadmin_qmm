@@ -61,7 +61,6 @@ Created By:
     #define GAME_NO_SEND_SERVER_COMMAND
     #define GAME_NO_FS_GETFILELIST
     #define GAME_NO_GET_USERINFO
-    #define G_CPRINTF G_CLIENT_PRINT
     typedef edict_t gentity_t;
 #elif defined(GAME_SOF2MP)
     #include <sof2mp/game/g_local.h>
