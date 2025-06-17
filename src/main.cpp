@@ -40,14 +40,8 @@ mod_vmMain_t g_vmMain = NULL;
 pluginfuncs_t* g_pluginfuncs = NULL;
 pluginvars_t* g_pluginvars = NULL;
 
-std::vector<playerinfo_t> g_playerinfo(MAX_CLIENTS);
-
+std::map<intptr_t, playerinfo_t> g_playerinfo;
 std::vector<userinfo_t> g_userinfo;
-
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-gentity_t* g_gents = nullptr;
-intptr_t g_gentsize = sizeof(gentity_t);
-#endif
 
 time_t g_mapstart;
 time_t g_leveltime;
@@ -91,18 +85,11 @@ C_DLLEXPORT void QMM_Detach() {
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-		gentity_t* ent = (gentity_t*)(args[0]);
-		int arg0 = ent->s.number;
-#endif
-		g_playerinfo[args[0]] = {};
+		if (g_playerinfo.count(args[0]))
+			g_playerinfo.erase(args[0]);
 	}
 	// handle client commands
 	else if (cmd == GAME_CLIENT_COMMAND) {
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-		gentity_t* ent = (gentity_t*)(args[0]);
-		int arg0 = ent->s.number;
-#endif
 		return handlecommand(args[0], parse_args(0));
 	}
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
@@ -138,39 +125,28 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	// save client data on connection
 	// (this is here in _Post so that the game has a chance to do various info checking before we get the values)
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
-#ifdef GAME_NO_GET_USERINFO
-		gentity_t* ent = (gentity_t*)(args[0]);
-		char* userinfo = (char*)(args[1]);
-
-		intptr_t arg0 = ent->s.number;
-#else
-		intptr_t arg0 = args[0];
+		intptr_t clientnum = args[0];
 
 		char userinfo[MAX_INFO_STRING];
-		g_syscall(G_GET_USERINFO, arg0, userinfo, sizeof(userinfo));
-#endif
+		g_syscall(G_GET_USERINFO, clientnum, userinfo, sizeof(userinfo));
 
-		playerinfo_t& info = g_playerinfo[arg0];
-		if (cmd == GAME_CLIENT_CONNECT) {
-			info = {};
-			info.connected = true;
-			info.access = 0;
+		// if playerinfo is missing, make a new one
+		if (!g_playerinfo.count(clientnum)) {
+			g_playerinfo[clientnum] = {};
+			g_playerinfo[clientnum].access = 0;
 		}
+		
+		// update ip/guid/name
+		playerinfo_t& info = g_playerinfo[clientnum]; 
 
 		std::string ip = QMM_INFOVALUEFORKEY(userinfo, "ip");
 		info.ip = ip.substr(0, ip.find(':'));
 		info.guid = QMM_INFOVALUEFORKEY(userinfo, "cl_guid");
 		info.name = QMM_INFOVALUEFORKEY(userinfo, "name");
 		info.stripname = strip_codes(info.name);
-
 	}
 	// handle the game initialization (dependent on mod being loaded)
 	else if (cmd == GAME_INIT) {
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-		g_gents = *(gentity_t**)g_vmMain(GAMEVP_EDICTS);
-		g_gentsize = *(int*)g_vmMain(GAMEV_EDICT_SIZE);
-#endif
-
 		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
 		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		

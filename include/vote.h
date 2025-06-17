@@ -25,13 +25,13 @@ typedef struct voteinfo_s {
 	pfnVoteFunc votefunc;
 	int choices;
 	void* param;
-	int clientnum;
+	intptr_t clientnum;
 	std::map<int, int> votes;	// votecount[clientnum] = choice
 } voteinfo_t;
 extern voteinfo_t g_vote;
 
-void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param);
-void vote_add(int clientnum, int vote);
+void vote_start(intptr_t clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param);
+void vote_add(intptr_t clientnum, int vote);
 void vote_finish();
 
 #endif // __QADMIN_QMM_VOTE_H__

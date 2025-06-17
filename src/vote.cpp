@@ -26,7 +26,7 @@ voteinfo_t g_vote;
 
 
 // initiate a vote
-void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param) {
+void vote_start(intptr_t clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param) {
 	if (g_vote.inuse) {
 		player_clientprint(clientnum, "[QADMIN] A vote is already running\n");
 		return;
@@ -42,7 +42,7 @@ void vote_start(int clientnum, pfnVoteFunc callback, intptr_t seconds, int choic
 
 
 // someone has voted (vote should be 1-9)
-void vote_add(int clientnum, int vote) {
+void vote_add(intptr_t clientnum, int vote) {
 	if (!g_vote.inuse) {
 		player_clientprint(clientnum, "[QADMIN] There is no vote currently running\n");
 		return;

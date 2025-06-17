@@ -18,9 +18,7 @@ Created By:
 
 #include <vector>
 #include <string>
-#include <stdarg.h>
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdint>
 #include "main.h"
 #include "util.h"
 
@@ -30,11 +28,11 @@ Created By:
  #endif
 #endif
 
-bool player_has_access(int clientnum, int reqaccess) {
+bool player_has_access(intptr_t clientnum, int reqaccess) {
 	if (clientnum == SERVER_CONSOLE)
 		return true;
 	
-	if (clientnum < 0 || clientnum >= MAX_CLIENTS)
+	if (!g_playerinfo.count(clientnum))
 		return false;
 
 	int defaccess = (int)QMM_GETINTCVAR("admin_default_access");
@@ -45,22 +43,12 @@ bool player_has_access(int clientnum, int reqaccess) {
 }
 
 
-// returns the first slot id with given ip starting after the slot id specified in 'start_after'
-int player_with_ip(std::string find, int start_after) {
-	for (int i = start_after + 1; i < g_playerinfo.size(); ++i) {
-		if (g_playerinfo[i].ip == find)
-			return i;
-	}
-	return -1;
-}
-
-
-void player_clientprint(int clientnum, const char* msg, bool chat) {
+void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
 	if (clientnum == SERVER_CONSOLE)
 		g_syscall(G_PRINT, msg);
 	else {
 #ifdef GAME_NO_SEND_SERVER_COMMAND
-		g_syscall(G_CPRINTF, ENT_FROM_NUM(clientnum), PRINT_HIGH, "%s", msg);
+		g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
 #else
 		if (chat)
 			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("chat \"%s\"", msg));
@@ -71,12 +59,12 @@ void player_clientprint(int clientnum, const char* msg, bool chat) {
 }
 
 
-void player_kick(int slotid, std::string message) {
-#ifdef GAME_NO_DROP_CLIENT
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("kick %d\n", slotid));
-#else
-	g_syscall(G_DROP_CLIENT, slotid, message.c_str());
+void player_kick(intptr_t clientnum, std::string message) {
+#ifdef GAME_CLIENT_ENT_PTRS
+	edict_t* ent = (edict_t*)clientnum;
+	clientnum = ent->s.number;
 #endif
+	g_syscall(G_DROP_CLIENT, clientnum, message.c_str());
 }
 
 
@@ -99,32 +87,36 @@ std::string strip_codes(std::string name) {
 }
 
 
-// returns index of matching name
-// -1 when ambiguous or not found
-int player_with_name(std::string find, bool ret_first, int start_after) {
-	int matchid = -1;
+// returns vector of indexes of partial or full matching name
+std::vector<intptr_t> players_with_name(std::string find) {
+	std::vector<intptr_t> ret;
 
-	for (int i = start_after + 1; i < g_playerinfo.size(); i++) {
-		auto& player = g_playerinfo[i];
-		if (!player.connected)
-			continue;
-
-		// on a complete match, return
-		if (str_striequal(find, g_playerinfo[i].name))
-			return i;
-
-		// try partial matches. cancel if ret_first is false and we found 2 matches
-		if (str_stristr(find, g_playerinfo[i].name) || str_stristr(find, g_playerinfo[i].stripname)) {
-			if (ret_first)
-				return i;			
-			else if (matchid != -1)
-				return -1;
-			matchid = i;
+	for (auto& playerinfo : g_playerinfo) {
+		// for exact match, return just this player
+		if (str_striequal(find, playerinfo.second.name) || str_striequal(find, playerinfo.second.stripname)) {
+			ret.clear();
+			ret.push_back(playerinfo.first);
+			return ret;
 		}
-
+		else if (str_stristr(find, playerinfo.second.name) || str_stristr(find, playerinfo.second.stripname)) {
+			ret.push_back(playerinfo.first);
+		}
 	}
 
-	return matchid;
+	return ret;
+}
+
+
+// returns vector of indexes with matching ip
+std::vector<intptr_t> players_with_ip(std::string find) {
+	std::vector<intptr_t> ret;
+
+	for (auto& playerinfo : g_playerinfo) {
+		if (playerinfo.second.ip == find)
+			ret.push_back(playerinfo.first);
+	}
+
+	return ret;
 }
 
 

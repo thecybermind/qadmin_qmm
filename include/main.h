@@ -13,6 +13,7 @@ Created By:
 #define __QADMIN_QMM_MAIN_H__
 
 #include <vector>
+#include <map>
 #include <string>
 
 #include "game.h"
@@ -64,7 +65,6 @@ typedef struct playerinfo_s {
 	int access = 0;
 	bool authed = false;
 	bool gagged = false;
-	bool connected = false;
 } playerinfo_t;
 
 typedef struct userinfo_s {
@@ -74,12 +74,7 @@ typedef struct userinfo_s {
 	addusertype_t type;
 } userinfo_t;
 
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-extern gentity_t* g_gents;
-extern intptr_t g_gentsize;
-#endif
-
-extern std::vector<playerinfo_t> g_playerinfo;
+extern std::map<intptr_t, playerinfo_t> g_playerinfo;
 extern std::vector<userinfo_t> g_userinfo;
 
 extern time_t g_mapstart;

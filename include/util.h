@@ -14,13 +14,14 @@ Created By:
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
-bool player_has_access(int clientnum, int reqaccess);
-int player_with_ip(std::string find, int start_after = -1);
-void player_clientprint(int clientnum, const char* msg, bool chat = false);
-void player_kick(int slotid, std::string message);
+bool player_has_access(intptr_t clientnum, int reqaccess);
+void player_clientprint(intptr_t clientnum, const char* msg, bool chat = false);
+void player_kick(intptr_t clientnum, std::string message);
 std::string strip_codes(std::string name);
-int player_with_name(std::string find, bool ret_first = 0, int start_after = -1);
+std::vector<intptr_t> players_with_name(std::string find);
+std::vector<intptr_t> players_with_ip(std::string find);
 bool is_valid_map(std::string map);
 std::string str_sanitize(std::string str);
 

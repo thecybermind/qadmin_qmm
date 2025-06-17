@@ -35,7 +35,6 @@ Created By:
     #include <mohaa/fgame/bg_public.h>
     #include <game_mohaa.h>
     #define GAME_NO_FS_GETFILELIST
-    #define GAME_CLIENT_USERINFO_CHANGED GAME_CLIENT_USERINFOCHANGED
 #elif defined(GAME_MOHSH)
     #include <mohsh/fgame/g_local.h>
     #include <mohsh/fgame/bg_public.h>
@@ -50,17 +49,17 @@ Created By:
     #include <quake2/game/g_local.h>
     #include <game_quake2.h>
     #define GAME_NO_NAME_COLOR
+    #define GAME_CLIENT_ENT_PTRS
     #define GAME_NO_SEND_SERVER_COMMAND
     #define GAME_NO_FS_GETFILELIST
-    #define GAME_NO_GET_USERINFO
     typedef edict_t gentity_t;
 #elif defined(GAME_Q2R)
     #include <q2r/rerelease/g_local.h>
     #include <game_q2r.h>
     #define GAME_NO_NAME_COLOR
+    #define GAME_CLIENT_ENT_PTRS
     #define GAME_NO_SEND_SERVER_COMMAND
     #define GAME_NO_FS_GETFILELIST
-    #define GAME_NO_GET_USERINFO
     typedef edict_t gentity_t;
 #elif defined(GAME_SOF2MP)
     #include <sof2mp/game/g_local.h>
