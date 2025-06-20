@@ -585,7 +585,7 @@ int admin_timeleft(intptr_t clientnum, int access, std::vector<std::string> args
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] There is no time limit.\n");
 		QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
 	}
-	time_t timeleft = (timelimit * 60) - (time(NULL) - g_mapstart);
+	time_t timeleft = (timelimit * 60) - (time(nullptr) - g_mapstart);
 
 	if (timeleft <= 0)
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] Time limit has been reached\n");

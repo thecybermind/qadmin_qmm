@@ -25,7 +25,7 @@ Created By:
 #include "vote.h"
 #include "util.h"
 
-pluginres_t* g_result = NULL;
+pluginres_t* g_result = nullptr;
 plugininfo_t g_plugininfo = {
 	QMM_PIFV_MAJOR,									// plugin interface version major
 	QMM_PIFV_MINOR,									// plugin interface version minor
@@ -35,10 +35,10 @@ plugininfo_t g_plugininfo = {
 	QADMIN_QMM_BUILDER,								// author of plugin
 	"https://github.com/thecybermind/qadmin_qmm/",	// website of plugin
 };
-eng_syscall_t g_syscall = NULL;
-mod_vmMain_t g_vmMain = NULL;
-pluginfuncs_t* g_pluginfuncs = NULL;
-pluginvars_t* g_pluginvars = NULL;
+eng_syscall_t g_syscall = nullptr;
+mod_vmMain_t g_vmMain = nullptr;
+pluginfuncs_t* g_pluginfuncs = nullptr;
+pluginvars_t* g_pluginvars = nullptr;
 
 std::map<intptr_t, playerinfo_t> g_playerinfo;
 std::vector<userinfo_t> g_userinfo;
@@ -62,15 +62,15 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	QMM_WRITEQMMLOG("QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "QADMIN");
 
 	// make version cvar
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
 	g_syscall(G_CVAR_SET, "admin_version", QADMIN_QMM_VERSION);
 
 	// other cvars
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_default_access", "1", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_vote_kick_time", "60", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_vote_map_time", "60", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, NULL, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_kick_time", "60", CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_map_time", "60", CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
+	g_syscall(G_CVAR_REGISTER, nullptr, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
 
 	return 1;
 }
