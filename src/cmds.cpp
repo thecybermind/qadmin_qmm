@@ -50,7 +50,6 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 
 	const char* strtype = (type == au_ip ? "IP" : (type == au_name ? "name" : "ID"));
 
-	int i = 0;
 	for (auto& info : g_userinfo) {
 		if (info.type == type && str_striequal(user, info.user)) {
 			QMM_WRITEQMMLOG(QMM_VARARGS("User %s entry already exists for \"%s\"\n", strtype, user.c_str()), QMMLOG_INFO, "QADMIN");
@@ -121,7 +120,7 @@ int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	if (args.size() > 1)
 		start = atoi(args[1].c_str());
 
-	if (start <= 0 || start > (g_admincmds.size()) + g_saycmds.size())
+	if (start <= 0 || start > (int)(g_admincmds.size()) + g_saycmds.size())
 		start = 1;
 	
 	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] admin_help listing for %d-%d\n", start, start+9));
@@ -709,7 +708,7 @@ int say(intptr_t clientnum, int access, std::vector<std::string> args, bool say)
 			// if the client has access, run handler func (get return value, func will set result flag)
 			if (player_has_access(clientnum, saycmd.reqaccess)) {
 				// only run handler func if we provided enough args
-				if (args.size() < (saycmd.minargs + 1))
+				if ((int)args.size() < (saycmd.minargs + 1))
 					QMM_RET_IGNORED(0);
 				else
 					return (saycmd.func)(clientnum, saycmd.reqaccess, args, true);	// true = say command
