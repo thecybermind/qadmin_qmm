@@ -120,7 +120,7 @@ int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	if (args.size() > 1)
 		start = atoi(args[1].c_str());
 
-	if (start <= 0 || start > (int)(g_admincmds.size()) + g_saycmds.size())
+	if (start <= 0 || start > (int)(g_admincmds.size() + g_saycmds.size()))
 		start = 1;
 	
 	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] admin_help listing for %d-%d\n", start, start+9));
