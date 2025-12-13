@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-JAMP|Win32">
+      <Configuration>Debug-JAMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JASP|Win32">
+      <Configuration>Debug-JASP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JK2MP|Win32">
+      <Configuration>Debug-JK2MP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JK2SP|Win32">
+      <Configuration>Debug-JK2SP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-MOHAA|Win32">
+      <Configuration>Debug-MOHAA</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-MOHBT|Win32">
+      <Configuration>Debug-MOHBT</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-MOHSH|Win32">
+      <Configuration>Debug-MOHSH</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q3A|Win32">
       <Configuration>Debug-Q3A</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-QUAKE2|Win32">
+      <Configuration>Debug-QUAKE2</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-RTCWMP|Win32">
@@ -13,100 +45,64 @@
       <Configuration>Debug-RTCWSP</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-WET|Win32">
-      <Configuration>Debug-WET</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-JK2MP|Win32">
-      <Configuration>Debug-JK2MP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-JAMP|Win32">
-      <Configuration>Debug-JAMP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-STVOYHM|Win32">
-      <Configuration>Debug-STVOYHM</Configuration>
+    <ProjectConfiguration Include="Debug-SOF2MP|Win32">
+      <Configuration>Debug-SOF2MP</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-STEF2|Win32">
       <Configuration>Debug-STEF2</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHAA|Win32">
+    <ProjectConfiguration Include="Debug-STVOYHM|Win32">
+      <Configuration>Debug-STVOYHM</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-STVOYSP|Win32">
+      <Configuration>Debug-STVOYSP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-WET|Win32">
+      <Configuration>Debug-WET</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JAMP|x64">
+      <Configuration>Debug-JAMP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JASP|x64">
+      <Configuration>Debug-JASP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JK2MP|x64">
+      <Configuration>Debug-JK2MP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-JK2SP|x64">
+      <Configuration>Debug-JK2SP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-MOHAA|x64">
       <Configuration>Debug-MOHAA</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHSH|Win32">
-      <Configuration>Debug-MOHSH</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHBT|Win32">
+    <ProjectConfiguration Include="Debug-MOHBT|x64">
       <Configuration>Debug-MOHBT</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-QUAKE2|Win32">
-      <Configuration>Debug-QUAKE2</Configuration>
-      <Platform>Win32</Platform>
+    <ProjectConfiguration Include="Debug-MOHSH|x64">
+      <Configuration>Debug-MOHSH</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-SOF2MP|Win32">
-      <Configuration>Debug-SOF2MP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-Q3A|Win32">
-      <Configuration>Release-Q3A</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-RTCWMP|Win32">
-      <Configuration>Release-RTCWMP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-RTCWSP|Win32">
-      <Configuration>Release-RTCWSP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-WET|Win32">
-      <Configuration>Release-WET</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-JK2MP|Win32">
-      <Configuration>Release-JK2MP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-JAMP|Win32">
-      <Configuration>Release-JAMP</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-STVOYHM|Win32">
-      <Configuration>Release-STVOYHM</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-STEF2|Win32">
-      <Configuration>Release-STEF2</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHAA|Win32">
-      <Configuration>Release-MOHAA</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHSH|Win32">
-      <Configuration>Release-MOHSH</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHBT|Win32">
-      <Configuration>Release-MOHBT</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-QUAKE2|Win32">
-      <Configuration>Release-QUAKE2</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-SOF2MP|Win32">
-      <Configuration>Release-SOF2MP</Configuration>
-      <Platform>Win32</Platform>
+    <ProjectConfiguration Include="Debug-Q2R|x64">
+      <Configuration>Debug-Q2R</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q3A|x64">
       <Configuration>Debug-Q3A</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-QUAKE2|x64">
+      <Configuration>Debug-QUAKE2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-RTCWMP|x64">
@@ -117,52 +113,128 @@
       <Configuration>Debug-RTCWSP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-WET|x64">
-      <Configuration>Debug-WET</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-JK2MP|x64">
-      <Configuration>Debug-JK2MP</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-JAMP|x64">
-      <Configuration>Debug-JAMP</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-STVOYHM|x64">
-      <Configuration>Debug-STVOYHM</Configuration>
+    <ProjectConfiguration Include="Debug-SOF2MP|x64">
+      <Configuration>Debug-SOF2MP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-STEF2|x64">
       <Configuration>Debug-STEF2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHAA|x64">
-      <Configuration>Debug-MOHAA</Configuration>
+    <ProjectConfiguration Include="Debug-STVOYHM|x64">
+      <Configuration>Debug-STVOYHM</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHSH|x64">
-      <Configuration>Debug-MOHSH</Configuration>
+    <ProjectConfiguration Include="Debug-STVOYSP|x64">
+      <Configuration>Debug-STVOYSP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-MOHBT|x64">
-      <Configuration>Debug-MOHBT</Configuration>
+    <ProjectConfiguration Include="Debug-WET|x64">
+      <Configuration>Debug-WET</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-QUAKE2|x64">
-      <Configuration>Debug-QUAKE2</Configuration>
+    <ProjectConfiguration Include="Release-JAMP|Win32">
+      <Configuration>Release-JAMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-JASP|Win32">
+      <Configuration>Release-JASP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-JK2MP|Win32">
+      <Configuration>Release-JK2MP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-JK2SP|Win32">
+      <Configuration>Release-JK2SP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHAA|Win32">
+      <Configuration>Release-MOHAA</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHBT|Win32">
+      <Configuration>Release-MOHBT</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHSH|Win32">
+      <Configuration>Release-MOHSH</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Q3A|Win32">
+      <Configuration>Release-Q3A</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-QUAKE2|Win32">
+      <Configuration>Release-QUAKE2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-RTCWMP|Win32">
+      <Configuration>Release-RTCWMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-RTCWSP|Win32">
+      <Configuration>Release-RTCWSP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-SOF2MP|Win32">
+      <Configuration>Release-SOF2MP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-STEF2|Win32">
+      <Configuration>Release-STEF2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-STVOYHM|Win32">
+      <Configuration>Release-STVOYHM</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-STVOYSP|Win32">
+      <Configuration>Release-STVOYSP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-WET|Win32">
+      <Configuration>Release-WET</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-JAMP|x64">
+      <Configuration>Release-JAMP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-Q2R|x64">
-      <Configuration>Debug-Q2R</Configuration>
+    <ProjectConfiguration Include="Release-JASP|x64">
+      <Configuration>Release-JASP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-SOF2MP|x64">
-      <Configuration>Debug-SOF2MP</Configuration>
+    <ProjectConfiguration Include="Release-JK2MP|x64">
+      <Configuration>Release-JK2MP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-JK2SP|x64">
+      <Configuration>Release-JK2SP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHAA|x64">
+      <Configuration>Release-MOHAA</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHBT|x64">
+      <Configuration>Release-MOHBT</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-MOHSH|x64">
+      <Configuration>Release-MOHSH</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Q2R|x64">
+      <Configuration>Release-Q2R</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|x64">
       <Configuration>Release-Q3A</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-QUAKE2|x64">
+      <Configuration>Release-QUAKE2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-RTCWMP|x64">
@@ -173,48 +245,24 @@
       <Configuration>Release-RTCWSP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-WET|x64">
-      <Configuration>Release-WET</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-JK2MP|x64">
-      <Configuration>Release-JK2MP</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-JAMP|x64">
-      <Configuration>Release-JAMP</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-STVOYHM|x64">
-      <Configuration>Release-STVOYHM</Configuration>
+    <ProjectConfiguration Include="Release-SOF2MP|x64">
+      <Configuration>Release-SOF2MP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-STEF2|x64">
       <Configuration>Release-STEF2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHAA|x64">
-      <Configuration>Release-MOHAA</Configuration>
+    <ProjectConfiguration Include="Release-STVOYHM|x64">
+      <Configuration>Release-STVOYHM</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHSH|x64">
-      <Configuration>Release-MOHSH</Configuration>
+    <ProjectConfiguration Include="Release-STVOYSP|x64">
+      <Configuration>Release-STVOYSP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-MOHBT|x64">
-      <Configuration>Release-MOHBT</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-QUAKE2|x64">
-      <Configuration>Release-QUAKE2</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-Q2R|x64">
-      <Configuration>Release-Q2R</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-SOF2MP|x64">
-      <Configuration>Release-SOF2MP</Configuration>
+    <ProjectConfiguration Include="Release-WET|x64">
+      <Configuration>Release-WET</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -276,8 +324,14 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-JAMP'))==true">
     <TargetName>$(ProjectName)_JAMP</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-JASP'))==true">
+    <TargetName>$(ProjectName)_JASP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-JK2MP'))==true">
     <TargetName>$(ProjectName)_JK2MP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-JK2SP'))==true">
+    <TargetName>$(ProjectName)_JK2SP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-MOHAA'))==true">
     <TargetName>$(ProjectName)_MOHAA</TargetName>
@@ -291,11 +345,17 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-Q3A'))==true">
     <TargetName>$(ProjectName)_Q3A</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-QUAKE2'))==true">
+    <TargetName>$(ProjectName)_QUAKE2</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-RTCWMP'))==true">
     <TargetName>$(ProjectName)_RTCWMP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-RTCWSP'))==true">
     <TargetName>$(ProjectName)_RTCWSP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF2MP'))==true">
+    <TargetName>$(ProjectName)_SOF2MP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-STEF2'))==true">
     <TargetName>$(ProjectName)_STEF2</TargetName>
@@ -303,20 +363,23 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-STVOYHM'))==true">
     <TargetName>$(ProjectName)_STVOYHM</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-STVOYSP'))==true">
+    <TargetName>$(ProjectName)_STVOYSP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-WET'))==true">
     <TargetName>$(ProjectName)_WET</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-QUAKE2'))==true">
-    <TargetName>$(ProjectName)_QUAKE2</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF2MP'))==true">
-    <TargetName>$(ProjectName)_SOF2MP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-JAMP'))==true">
     <TargetName>$(ProjectName)_x86_64_JAMP</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-JASP'))==true">
+    <TargetName>$(ProjectName)_x86_64_JASP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-JK2MP'))==true">
     <TargetName>$(ProjectName)_x86_64_JK2MP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-JK2SP'))==true">
+    <TargetName>$(ProjectName)_x86_64_JK2SP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-MOHAA'))==true">
     <TargetName>$(ProjectName)_x86_64_MOHAA</TargetName>
@@ -327,8 +390,14 @@
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-MOHSH'))==true">
     <TargetName>$(ProjectName)_x86_64_MOHSH</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q2R'))==true">
+    <TargetName>$(ProjectName)_x86_64_Q2R</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q3A'))==true">
     <TargetName>$(ProjectName)_x86_64_Q3A</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-QUAKE2'))==true">
+    <TargetName>$(ProjectName)_x86_64_QUAKE2</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-RTCWMP'))==true">
     <TargetName>$(ProjectName)_x86_64_RTCWMP</TargetName>
@@ -336,23 +405,20 @@
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-RTCWSP'))==true">
     <TargetName>$(ProjectName)_x86_64_RTCWSP</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF2MP'))==true">
+    <TargetName>$(ProjectName)_x86_64_SOF2MP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-STEF2'))==true">
     <TargetName>$(ProjectName)_x86_64_STEF2</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-STVOYHM'))==true">
     <TargetName>$(ProjectName)_x86_64_STVOYHM</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-STVOYSP'))==true">
+    <TargetName>$(ProjectName)_x86_64_STVOYSP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-WET'))==true">
     <TargetName>$(ProjectName)_x86_64_WET</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q2R'))==true">
-    <TargetName>$(ProjectName)_x86_64_Q2R</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-QUAKE2'))==true">
-    <TargetName>$(ProjectName)_x86_64_QUAKE2</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF2MP'))==true">
-    <TargetName>$(ProjectName)_x86_64_SOF2MP</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -393,9 +459,54 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JAMP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JAMP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JASP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JASP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JK2MP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2MP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JK2SP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2SP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHAA'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHAA</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHBT'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHBT</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHSH'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHSH</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q2R'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q3A'))==true">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q3A</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-QUAKE2'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-RTCWMP'))==true">
@@ -408,24 +519,9 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWSP</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-WET'))==true">
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF2MP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_WET</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JK2MP'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2MP</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JAMP'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JAMP</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STVOYHM'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYHM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF2MP</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STEF2'))==true">
@@ -433,34 +529,19 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STEF2</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHAA'))==true">
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STVOYHM'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHAA</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYHM</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHSH'))==true">
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STVOYSP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHSH</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYSP</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHBT'))==true">
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-WET'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHBT</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q2R'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-QUAKE2'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF2MP'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_WET</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
