@@ -153,7 +153,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		reload();
 	}
 
-	QMM_RET_IGNORED(1);
+	return 0;
 }
 
 
@@ -165,5 +165,5 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 
 // called after engine's syscall (mod->engine)
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	QMM_RET_IGNORED(1);
+	return 0;
 }
