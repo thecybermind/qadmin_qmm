@@ -117,7 +117,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 			vote_finish();
 	}
 
-	QMM_RET_IGNORED(1);
+	QMM_RET_IGNORED(0);
 }
 
 
@@ -154,17 +154,17 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		reload();
 	}
 
-	QMM_RET_IGNORED(1);
+	QMM_RET_IGNORED(0);
 }
 
 
 // called before engine's syscall (mod->engine)
 C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
-	QMM_RET_IGNORED(1);
+	QMM_RET_IGNORED(0);
 }
 
 
 // called after engine's syscall (mod->engine)
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	QMM_RET_IGNORED(1);
+	QMM_RET_IGNORED(0);
 }

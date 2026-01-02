@@ -44,18 +44,18 @@ bool player_has_access(intptr_t clientnum, int reqaccess) {
 
 
 void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
-	if (clientnum == SERVER_CONSOLE)
+	if (clientnum == SERVER_CONSOLE) {
 		g_syscall(G_PRINT, msg);
-	else {
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-		g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
-#else
-		if (chat)
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "chat \"%s\"", msg));
-		else
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "print \"%s\"", msg));
-#endif
+		return;
 	}
+#ifdef GAME_NO_SEND_SERVER_COMMAND
+	g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
+#else
+	if (chat)
+		g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "chat \"%s\"", msg));
+	else
+		g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "print \"%s\"", msg));
+#endif
 }
 
 

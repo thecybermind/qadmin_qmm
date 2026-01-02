@@ -86,11 +86,7 @@ int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
 			}
 
 			// if client doesn't have access, give warning message
-#ifdef GAME_NO_SEND_SERVER_COMMAND
-			g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, QMM_VARARGS(PLID, "[QADMIN] You do not have access to that command: '%s'\n", cmd.c_str()));
-#else
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "print \"[QADMIN] You do not have access to that command: '%s'\n\"\n", cmd.c_str()));
-#endif
+			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] You do not have access to that command: '%s'\n", cmd.c_str()));
 			QMM_RET_SUPERCEDE(1);
 		}
 	}
@@ -383,7 +379,7 @@ int admin_chat(intptr_t clientnum, int access, std::vector<std::string> args, bo
 int admin_csay(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = str_sanitize(str_join(args, 1));
 #ifdef GAME_NO_SEND_SERVER_COMMAND
-	g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, message.c_str());
+	g_syscall(G_CPRINTF, -1, PRINT_HIGH, message.c_str());
 #else
 	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS(PLID, "cp \"%s\n\"", message.c_str()));
 #endif
