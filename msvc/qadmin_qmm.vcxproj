@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-COD11MP|Win32">
+      <Configuration>Debug-COD11MP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-CODMP|Win32">
+      <Configuration>Debug-CODMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-CODUOMP|Win32">
+      <Configuration>Debug-CODUOMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-JAMP|Win32">
       <Configuration>Debug-JAMP</Configuration>
       <Platform>Win32</Platform>
@@ -45,6 +57,10 @@
       <Configuration>Debug-RTCWSP</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-SIN|Win32">
+      <Configuration>Debug-SIN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-SOF2MP|Win32">
       <Configuration>Debug-SOF2MP</Configuration>
       <Platform>Win32</Platform>
@@ -64,6 +80,18 @@
     <ProjectConfiguration Include="Debug-WET|Win32">
       <Configuration>Debug-WET</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-COD11MP|x64">
+      <Configuration>Debug-COD11MP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-CODMP|x64">
+      <Configuration>Debug-CODMP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-CODUOMP|x64">
+      <Configuration>Debug-CODUOMP</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-JAMP|x64">
       <Configuration>Debug-JAMP</Configuration>
@@ -113,6 +141,10 @@
       <Configuration>Debug-RTCWSP</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-SIN|x64">
+      <Configuration>Debug-SIN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-SOF2MP|x64">
       <Configuration>Debug-SOF2MP</Configuration>
       <Platform>x64</Platform>
@@ -132,6 +164,18 @@
     <ProjectConfiguration Include="Debug-WET|x64">
       <Configuration>Debug-WET</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-COD11MP|Win32">
+      <Configuration>Release-COD11MP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-CODMP|Win32">
+      <Configuration>Release-CODMP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-CODUOMP|Win32">
+      <Configuration>Release-CODUOMP</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-JAMP|Win32">
       <Configuration>Release-JAMP</Configuration>
@@ -177,6 +221,10 @@
       <Configuration>Release-RTCWSP</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-SIN|Win32">
+      <Configuration>Release-SIN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SOF2MP|Win32">
       <Configuration>Release-SOF2MP</Configuration>
       <Platform>Win32</Platform>
@@ -196,6 +244,18 @@
     <ProjectConfiguration Include="Release-WET|Win32">
       <Configuration>Release-WET</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-COD11MP|x64">
+      <Configuration>Release-COD11MP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-CODMP|x64">
+      <Configuration>Release-CODMP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-CODUOMP|x64">
+      <Configuration>Release-CODUOMP</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-JAMP|x64">
       <Configuration>Release-JAMP</Configuration>
@@ -243,6 +303,10 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-RTCWSP|x64">
       <Configuration>Release-RTCWSP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-SIN|x64">
+      <Configuration>Release-SIN</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SOF2MP|x64">
@@ -321,6 +385,15 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-COD11MP'))==true">
+    <TargetName>$(ProjectName)_COD11MP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-CODMP'))==true">
+    <TargetName>$(ProjectName)_CODMP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-CODUOMP'))==true">
+    <TargetName>$(ProjectName)_CODUOMP</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-JAMP'))==true">
     <TargetName>$(ProjectName)_JAMP</TargetName>
   </PropertyGroup>
@@ -354,6 +427,9 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-RTCWSP'))==true">
     <TargetName>$(ProjectName)_RTCWSP</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SIN'))==true">
+    <TargetName>$(ProjectName)_SIN</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF2MP'))==true">
     <TargetName>$(ProjectName)_SOF2MP</TargetName>
   </PropertyGroup>
@@ -368,6 +444,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-WET'))==true">
     <TargetName>$(ProjectName)_WET</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-COD11MP'))==true">
+    <TargetName>$(ProjectName)_x86_64_COD11MP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-CODMP'))==true">
+    <TargetName>$(ProjectName)_x86_64_CODMP</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-CODUOMP'))==true">
+    <TargetName>$(ProjectName)_x86_64_CODUOMP</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-JAMP'))==true">
     <TargetName>$(ProjectName)_x86_64_JAMP</TargetName>
@@ -405,6 +490,9 @@
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-RTCWSP'))==true">
     <TargetName>$(ProjectName)_x86_64_RTCWSP</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SIN'))==true">
+    <TargetName>$(ProjectName)_x86_64_SIN</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF2MP'))==true">
     <TargetName>$(ProjectName)_x86_64_SOF2MP</TargetName>
   </PropertyGroup>
@@ -437,7 +525,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableUAC>false</EnableUAC>
-	</Link>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Debug-'))==true">
     <ClCompile>
@@ -458,6 +546,21 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-COD11MP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_COD11MP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-CODMP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODMP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-CODUOMP'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODUOMP</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JAMP'))==true">
     <ClCompile>
@@ -517,6 +620,11 @@
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-RTCWSP'))==true">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWSP</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SIN'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SIN</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF2MP'))==true">

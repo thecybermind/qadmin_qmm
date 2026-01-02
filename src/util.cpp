@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -35,7 +35,7 @@ bool player_has_access(intptr_t clientnum, int reqaccess) {
 	if (!g_playerinfo.count(clientnum))
 		return false;
 
-	int defaccess = (int)QMM_GETINTCVAR("admin_default_access");
+	int defaccess = (int)QMM_GETINTCVAR(PLID, "admin_default_access");
 
 	int access = g_playerinfo[clientnum].access | defaccess;
 
@@ -51,9 +51,9 @@ void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
 		g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
 #else
 		if (chat)
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("chat \"%s\"", msg));
+			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "chat \"%s\"", msg));
 		else
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"%s\"", msg));
+			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "print \"%s\"", msg));
 #endif
 	}
 }
@@ -123,10 +123,10 @@ std::vector<intptr_t> players_with_ip(std::string find) {
 bool is_valid_map(std::string map) {
 	fileHandle_t fmap;
 #ifdef GAME_MOHAA
-	intptr_t mapsize = g_syscall(G_FS_FOPEN_FILE_QMM, QMM_VARARGS("maps\\%s", map.c_str()), &fmap, FS_READ);
+	intptr_t mapsize = g_syscall(G_FS_FOPEN_FILE_QMM, QMM_VARARGS(PLID, "maps\\%s", map.c_str()), &fmap, FS_READ);
 	g_syscall(G_FS_FCLOSE_FILE_QMM, fmap);
 #else
-	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps\\%s", map.c_str()), &fmap, FS_READ);
+	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS(PLID, "maps\\%s", map.c_str()), &fmap, FS_READ);
 	g_syscall(G_FS_FCLOSE_FILE, fmap);
 #endif
 	return mapsize ? true : false;
@@ -190,7 +190,7 @@ std::vector<std::string> parse_args(int start, int end) {
 	std::string s;
 
 	for (int i = start; i <= end; i++) {
-		QMM_ARGV(i, temp, sizeof(temp));
+		QMM_ARGV(PLID, i, temp, sizeof(temp));
 		if (i != start)
 			s += " ";
 		s += temp;

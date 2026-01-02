@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -17,7 +17,7 @@ Created By:
 #include <map>
 #include <time.h>
 
-typedef void (*pfnVoteFunc)(int winner, int winvotes, int totalvotes, void* param);
+typedef void (*pfnVoteFunc)(intptr_t winner, int winvotes, int totalvotes, void* param);
 
 typedef struct voteinfo_s {
 	bool inuse;
@@ -26,7 +26,7 @@ typedef struct voteinfo_s {
 	int choices;
 	void* param;
 	intptr_t clientnum;
-	std::map<int, int> votes;	// votecount[clientnum] = choice
+	std::map<intptr_t, int> votes;	// votecount[clientnum] = choice
 } voteinfo_t;
 extern voteinfo_t g_vote;
 

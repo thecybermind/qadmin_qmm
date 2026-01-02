@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -28,12 +28,12 @@ void reload() {
 	g_userinfo.clear();
 
 	// re-exec the config file
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s\n", QMM_GETSTRCVAR("admin_config_file")));
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "exec %s\n", QMM_GETSTRCVAR(PLID, "admin_config_file")));
 
 	// refresh gagged command list
-	g_gaggedCmds = parse_str(QMM_GETSTRCVAR("admin_gagged_cmds"), ',');
+	g_gaggedCmds = parse_str(QMM_GETSTRCVAR(PLID, "admin_gagged_cmds"), ',');
 
-	QMM_WRITEQMMLOG("Configs/cvars (re)loaded\n", QMMLOG_INFO, "QADMIN");
+	QMM_WRITEQMMLOG(PLID, "Configs/cvars (re)loaded\n", QMMLOG_INFO);
 }
 
 
@@ -41,7 +41,7 @@ void reload() {
 // server command to add a new user
 int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	if (args.size() < 4) {
-		QMM_WRITEQMMLOG(QMM_VARARGS("Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str()), QMMLOG_INFO, "QADMIN");
+		QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str()), QMMLOG_INFO);
 		QMM_RET_SUPERCEDE(1);
 	}
 	std::string user = args[1];
@@ -52,7 +52,7 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 
 	for (auto& info : g_userinfo) {
 		if (info.type == type && str_striequal(user, info.user)) {
-			QMM_WRITEQMMLOG(QMM_VARARGS("User %s entry already exists for \"%s\"\n", strtype, user.c_str()), QMMLOG_INFO, "QADMIN");
+			QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "User %s entry already exists for \"%s\"\n", strtype, user.c_str()), QMMLOG_INFO);
 			QMM_RET_SUPERCEDE(1);
 		}
 	}
@@ -60,7 +60,7 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	userinfo_t newuser = { user, pass, access, type };
 	g_userinfo.push_back(newuser);
 
-	QMM_WRITEQMMLOG(QMM_VARARGS("New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access), QMMLOG_INFO, "QADMIN");
+	QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access), QMMLOG_INFO);
 	QMM_RET_SUPERCEDE(1);
 }
 
@@ -78,7 +78,7 @@ int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
 				// only run handler func if we provided enough args
 				// otherwise, show the help entry
 				if (g_syscall(G_ARGC) < (admincmd.minargs + 1)) {
-					player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Missing parameters, usage:\n[QADMIN] %s\n", admincmd.usage));
+					player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Missing parameters, usage:\n[QADMIN] %s\n", admincmd.usage));
 					QMM_RET_SUPERCEDE(1);
 				}
 				else
@@ -87,9 +87,9 @@ int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
 
 			// if client doesn't have access, give warning message
 #ifdef GAME_NO_SEND_SERVER_COMMAND
-			g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, QMM_VARARGS("[QADMIN] You do not have access to that command: '%s'\n", cmd.c_str()));
+			g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, QMM_VARARGS(PLID, "[QADMIN] You do not have access to that command: '%s'\n", cmd.c_str()));
 #else
-			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"[QADMIN] You do not have access to that command: '%s'\n\"\n", cmd.c_str()));
+			g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS(PLID, "print \"[QADMIN] You do not have access to that command: '%s'\n\"\n", cmd.c_str()));
 #endif
 			QMM_RET_SUPERCEDE(1);
 		}
@@ -123,7 +123,7 @@ int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	if (start <= 0 || start > (int)(g_admincmds.size() + g_saycmds.size()))
 		start = 1;
 	
-	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] admin_help listing for %d-%d\n", start, start+9));
+	player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] admin_help listing for %d-%d\n", start, start+9));
 
 	// counter for valid commands
 	int count_cmd = 1;
@@ -135,7 +135,7 @@ int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bo
 		if (player_has_access(clientnum, cmd.reqaccess) && cmd.usage && cmd.usage[0] && cmd.help && cmd.help[0]) {
 			// if the command is within our display range
 			if (count_cmd >= start && count_cmd <= (start + 9)) {
-				player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %d. %s - %s\n", count_show, cmd.usage, cmd.help));
+				player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %d. %s - %s\n", count_show, cmd.usage, cmd.help));
 				++count_show;
 			}
 			++count_cmd;
@@ -169,7 +169,7 @@ int admin_login(intptr_t clientnum, int access, std::vector<std::string> args, b
 		if (str_striequal(info.user, match) && str_striequal(info.pass, password)) {
 			g_playerinfo[clientnum].access = info.access;
 			g_playerinfo[clientnum].authed = 1;
-			player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You have successfully authenticated. You now have %d access.\n", g_playerinfo[clientnum].access));
+			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] You have successfully authenticated. You now have %d access.\n", g_playerinfo[clientnum].access));
 			QMM_RET_SUPERCEDE(1);
 		}
 	}
@@ -188,11 +188,11 @@ int admin_ban(intptr_t clientnum, int access, std::vector<std::string> args, boo
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
@@ -200,7 +200,7 @@ int admin_ban(intptr_t clientnum, int access, std::vector<std::string> args, boo
 
 	// check if the desired user has immunity
 	if (player_has_access(targetclient, ACCESS_IMMUNITY)) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot ban %s, user has immunity.\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot ban %s, user has immunity.\n", g_playerinfo[targetclient].name.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
@@ -221,13 +221,13 @@ int admin_ban(intptr_t clientnum, int access, std::vector<std::string> args, boo
 
 	// if no users with immunity have the IP, ban the IP and kick the user
 	if (!immunity) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", g_playerinfo[targetclient].ip.c_str(), message.c_str()));
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Banned %s by IP (%s): '%s'\n", g_playerinfo[targetclient].name.c_str(), g_playerinfo[targetclient].ip.c_str(), message.c_str()));
+		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "addip \"%s\" \"%s\"\n", g_playerinfo[targetclient].ip.c_str(), message.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Banned %s by IP (%s): '%s'\n", g_playerinfo[targetclient].name.c_str(), g_playerinfo[targetclient].ip.c_str(), message.c_str()));
 		player_kick(targetclient, message);
 	}
 	// else at least 1 user with immunity has the given IP
 	else {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot ban %s by IP, another user with that IP (%s) has immunity.\n", g_playerinfo[targetclient].name.c_str(), g_playerinfo[targetclient].ip.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot ban %s by IP, another user with that IP (%s) has immunity.\n", g_playerinfo[targetclient].name.c_str(), g_playerinfo[targetclient].ip.c_str()));
 	}
 
 	// kick the users on the IP without immunity
@@ -263,12 +263,12 @@ int admin_banip(intptr_t clientnum, int access, std::vector<std::string> args, b
 
 	// if no users with immunity have the IP, ban the IP
 	if (!immunity) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", user.c_str(), message.c_str()));
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Banned IP %s: '%s'\n", user.c_str(), message.c_str()));
+		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "addip \"%s\" \"%s\"\n", user.c_str(), message.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Banned IP %s: '%s'\n", user.c_str(), message.c_str()));
 	}		
 	// else at least 1 user with immunity has the given IP
 	else {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot ban IP %s, a user with that IP has immunity. Kicking non-immune users.\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot ban IP %s, a user with that IP has immunity. Kicking non-immune users.\n", user.c_str()));
 	}
 
 	// kick the users on the IP without immunity
@@ -282,8 +282,8 @@ int admin_banip(intptr_t clientnum, int access, std::vector<std::string> args, b
 int admin_unban(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string ip = str_sanitize(args[1]);
 
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("removeip \"%s\"\n", ip.c_str()));
-	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Unbanned IP %s\n", ip.c_str()));
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "removeip \"%s\"\n", ip.c_str()));
+	player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Unbanned IP %s\n", ip.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -292,7 +292,7 @@ int admin_unban(intptr_t clientnum, int access, std::vector<std::string> args, b
 int admin_cfg(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string file = str_sanitize(args[1]);
 
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec \"%s\"\n", file.c_str()));
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "exec \"%s\"\n", file.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -300,7 +300,7 @@ int admin_cfg(intptr_t clientnum, int access, std::vector<std::string> args, boo
 
 int admin_rcon(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string str = str_join(args, 1);
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("%s\n", str.c_str()));
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "%s\n", str.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -336,7 +336,7 @@ int admin_gametype(intptr_t clientnum, int access, std::vector<std::string> args
 
 int admin_map(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string map = str_sanitize(args[1]);
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", args[1].c_str()));
+	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "map \"%s\"\n", args[1].c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -373,7 +373,7 @@ int admin_chat(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	std::string message = str_sanitize(str_join(args, 1));
 	for (auto& playerinfo : g_playerinfo) {
 		if (player_has_access(playerinfo.first, access))
-			player_clientprint(playerinfo.first, QMM_VARARGS("To Admins From %s: %s", clientnum == SERVER_CONSOLE ? "Console" : playerinfo.second.name.c_str(), message.c_str()), true);
+			player_clientprint(playerinfo.first, QMM_VARARGS(PLID, "To Admins From %s: %s", clientnum == SERVER_CONSOLE ? "Console" : playerinfo.second.name.c_str(), message.c_str()), true);
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -385,7 +385,7 @@ int admin_csay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 	g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, message.c_str());
 #else
-	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS("cp \"%s\n\"", message.c_str()));
+	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS(PLID, "cp \"%s\n\"", message.c_str()));
 #endif
 
 	QMM_RET_SUPERCEDE(1);
@@ -405,11 +405,11 @@ int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
@@ -418,8 +418,8 @@ int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	std::string message = str_sanitize(str_join(args, 2));	
 	std::string toname = g_playerinfo[targetclient].name;
 
-	player_clientprint(clientnum, QMM_VARARGS("Private Message To %s: %s", toname.c_str(), message.c_str()), true);
-	player_clientprint(targetclient, QMM_VARARGS("Private Message From %s: %s", clientnum == SERVER_CONSOLE ? "Console" : toname.c_str(), message.c_str()), true);
+	player_clientprint(clientnum, QMM_VARARGS(PLID, "Private Message To %s: %s", toname.c_str(), message.c_str()), true);
+	player_clientprint(targetclient, QMM_VARARGS(PLID, "Private Message From %s: %s", clientnum == SERVER_CONSOLE ? "Console" : toname.c_str(), message.c_str()), true);
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -428,12 +428,15 @@ int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 #ifndef GAME_NO_FS_GETFILELIST
 	char dirlist[MAX_STRING_LENGTH];
-	char* dirptr = dirlist;
 
-	int numfiles = g_syscall(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
+	int numfiles = (int)g_syscall(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
+	char* dirptr = dirlist;
 
 	player_clientprint(clientnum, "[QADMIN] Listing maps...\n");
 	for (int i = 1; i < numfiles; ++i) {
+#ifdef _WIN32
+#pragma warning(disable: 6054)	// dirptr may not be null-terminated below
+#endif
 		dirptr += strlen(dirptr);
 		*dirptr = '\n';
 	}
@@ -450,18 +453,18 @@ int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bo
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
 	intptr_t targetclient = targets[0];
 
 	if (player_has_access(targetclient, ACCESS_IMMUNITY)) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	
@@ -469,7 +472,7 @@ int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bo
 	if (message.empty())
 		message = "Kicked by Admin";
 	
-	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Kicked %s: '%s'\n", g_playerinfo[targetclient].name.c_str(), message.c_str()));
+	player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Kicked %s: '%s'\n", g_playerinfo[targetclient].name.c_str(), message.c_str()));
 	player_kick(targetclient, message);
 
 	QMM_RET_SUPERCEDE(1);
@@ -491,7 +494,7 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 	// if a parameter was given, only display users matching it
 	if (args.size() > 1) {
 		match = args[1];
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Listing users matching '%s'...\n", match.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Listing users matching '%s'...\n", match.c_str()));
 	}
 	else {
 		player_clientprint(clientnum, "[QADMIN] Listing users...\n");
@@ -505,9 +508,9 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 	for (auto player : players_with_name(match)) {
 		playerinfo_t& info = g_playerinfo[player];
 		if (banaccess)
-			player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %3d: %-8d %-6s %-15s %s\n", player, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
+			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %-15s %s\n", player, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
 		else
-			player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %3d: %-8d %-6s %s\n", player, info.access, info.authed ? "yes" : "no", info.name.c_str()));
+			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %s\n", player, info.access, info.authed ? "yes" : "no", info.name.c_str()));
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -520,25 +523,25 @@ int admin_gag(intptr_t clientnum, int access, std::vector<std::string> args, boo
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
 	intptr_t targetclient = targets[0];
 
 	if (player_has_access(targetclient, ACCESS_IMMUNITY)) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot gag %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot gag %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
 	}
 	else if (g_playerinfo[targetclient].gagged) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %s is already gagged\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %s is already gagged\n", g_playerinfo[targetclient].name.c_str()));
 	}
 	else {
 		g_playerinfo[targetclient].gagged = true;
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %s has been gagged\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %s has been gagged\n", g_playerinfo[targetclient].name.c_str()));
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -551,11 +554,11 @@ int admin_ungag(intptr_t clientnum, int access, std::vector<std::string> args, b
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
@@ -563,9 +566,9 @@ int admin_ungag(intptr_t clientnum, int access, std::vector<std::string> args, b
 
 	if (g_playerinfo[targetclient].gagged) {
 		g_playerinfo[targetclient].gagged = false;
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %s has been ungagged\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %s has been ungagged\n", g_playerinfo[targetclient].name.c_str()));
 	} else {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %s is not gagged\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %s is not gagged\n", g_playerinfo[targetclient].name.c_str()));
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -573,7 +576,7 @@ int admin_ungag(intptr_t clientnum, int access, std::vector<std::string> args, b
 
 
 int admin_currentmap(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	player_clientprint(say ? -1 : clientnum, QMM_VARARGS("[QADMIN] The current map is: %s\n", QMM_GETSTRCVAR("mapname")));
+	player_clientprint(say ? -1 : clientnum, QMM_VARARGS(PLID, "[QADMIN] The current map is: %s\n", QMM_GETSTRCVAR(PLID, "mapname")));
 	QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
 }
 
@@ -589,19 +592,19 @@ int admin_timeleft(intptr_t clientnum, int access, std::vector<std::string> args
 	if (timeleft <= 0)
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] Time limit has been reached\n");
 	else
-		player_clientprint(say ? -1 : clientnum, QMM_VARARGS("[QADMIN] Time remaining: %lu minute(s) %lu second(s)\n", timeleft / 60, timeleft % 60));
+		player_clientprint(say ? -1 : clientnum, QMM_VARARGS(PLID, "[QADMIN] Time remaining: %lu minute(s) %lu second(s)\n", timeleft / 60, timeleft % 60));
 
 	QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
 }
 
 
-void handle_vote_map(int winner, int winvotes, int totalvotes, void* param) {
+void handle_vote_map(intptr_t winner, int winvotes, int totalvotes, void* param) {
 	std::string map = *(std::string*)param;
 	if (winner == 1) {
-		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to change map to %s was successful\n", map.c_str()));
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", map.c_str()));
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] Vote to change map to %s was successful\n", map.c_str()));
+		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "map \"%s\"\n", map.c_str()));
 	} else {
-		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to change map to %s has failed\n", map.c_str()));
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] Vote to change map to %s has failed\n", map.c_str()));
 	}
 }
 
@@ -610,16 +613,16 @@ int admin_vote_map(intptr_t clientnum, int access, std::vector<std::string> args
 	// this is static so that it still exists when passed to handle_vote_map as param
 	static std::string map;
 
-	int time = (int)QMM_GETINTCVAR("admin_vote_map_time");
+	int time = (int)QMM_GETINTCVAR(PLID, "admin_vote_map_time");
 
 	map = args[1];
 
 	if (!is_valid_map(map)) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Unknown map '%s'\n", map.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Unknown map '%s'\n", map.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
-	player_clientprint(-1, QMM_VARARGS("[QADMIN] A %d second vote has been started to changed map to %s\n", time, map.c_str()));
+	player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to changed map to %s\n", time, map.c_str()));
 	player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
 	
 	vote_start(clientnum, handle_vote_map, time, 2, (void*)&map);
@@ -628,7 +631,7 @@ int admin_vote_map(intptr_t clientnum, int access, std::vector<std::string> args
 }
 
 
-void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
+void handle_vote_kick(intptr_t winner, int winvotes, int totalvotes, void* param) {
 	int clientnum = (int)(intptr_t)param;
 	
 	// user may have authed and gotten immunity during the vote,
@@ -637,25 +640,25 @@ void handle_vote_kick(int winner, int winvotes, int totalvotes, void* param) {
 		winner = 0;
 
 	if (winner == 1 && winvotes) {
-		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to kick %s was successful\n", g_playerinfo[clientnum].name));
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] Vote to kick %s was successful\n", g_playerinfo[clientnum].name));
 		player_kick(clientnum, "Kicked due to vote.");
 	} else {
-		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to kick %s has failed\n", g_playerinfo[clientnum].name));
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] Vote to kick %s has failed\n", g_playerinfo[clientnum].name));
 	}
 }
 
 
 int admin_vote_kick(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	int votetime = (int)QMM_GETINTCVAR("admin_vote_kick_time");
+	int votetime = (int)QMM_GETINTCVAR(PLID, "admin_vote_kick_time");
 	std::string user = args[1];
 
 	std::vector<intptr_t> targets = players_with_name(user);
 	if (targets.size() == 0) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Match not found for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Match not found for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 	else if (targets.size() > 1) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Ambiguous match for '%s'\n", user.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
@@ -665,11 +668,11 @@ int admin_vote_kick(intptr_t clientnum, int access, std::vector<std::string> arg
 	// the user's immunity is also checked in the vote
 	// handler in case he auths before the vote ends
 	if (player_has_access(targetclient, ACCESS_IMMUNITY)) {
-		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Cannot kick %s, user has immunity\n", g_playerinfo[targetclient].name.c_str()));
 		QMM_RET_SUPERCEDE(1);
 	}
 
-	player_clientprint(-1, QMM_VARARGS("[QADMIN] A %d second vote has been started to kick %s\n", votetime, g_playerinfo[targetclient].name.c_str()));
+	player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to kick %s\n", votetime, g_playerinfo[targetclient].name.c_str()));
 	player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
 	vote_start(clientnum, handle_vote_kick, votetime, 2, (void*)(intptr_t)targetclient);
 
@@ -715,7 +718,7 @@ int say(intptr_t clientnum, int access, std::vector<std::string> args, bool say)
 			}
 
 			// if client doesn't have access, give warning message
-			player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You do not have access to that command: '%s'\n", saycmd.cmd));
+			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] You do not have access to that command: '%s'\n", saycmd.cmd));
 
 			QMM_RET_SUPERCEDE(1);
 		}

@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -18,6 +18,9 @@ Created By:
 
 #include "game.h"
 
+#ifdef MAX_STRING_LENGTH
+#undef MAX_STRING_LENGTH
+#endif
 #define MAX_STRING_LENGTH 1024
 #define MAX_DATA_LENGTH 200
 #define MAX_COMMAND_LENGTH 64

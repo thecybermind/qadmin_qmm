@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -31,9 +31,10 @@ plugininfo_t g_plugininfo = {
 	QMM_PIFV_MINOR,									// plugin interface version minor
 	"QAdmin",										// name of plugin
 	QADMIN_QMM_VERSION,								// version of plugin
-	"Administration Plugin",						// description of plugin
+	"Server Administration Plugin",					// description of plugin
 	QADMIN_QMM_BUILDER,								// author of plugin
 	"https://github.com/thecybermind/qadmin_qmm/",	// website of plugin
+	"QADMIN",										// logtag of plugin
 };
 eng_syscall_t g_syscall = nullptr;
 mod_vmMain_t g_vmMain = nullptr;
@@ -59,7 +60,7 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
 
-	QMM_WRITEQMMLOG("QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "QADMIN");
+	QMM_WRITEQMMLOG(PLID, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
 
 	// make version cvar
 	g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
@@ -95,7 +96,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	else if (cmd == GAME_CONSOLE_COMMAND) {
 		char command[MAX_COMMAND_LENGTH];
-		QMM_ARGV(0, command, sizeof(command));
+		QMM_ARGV(PLID, 0, command, sizeof(command));
 		if (str_striequal(command, "admin_cmd") || str_striequal(command, "a_c"))
 			return handlecommand(SERVER_CONSOLE, parse_args(1));
 		else if (str_striequal(command, "admin_adduser_ip"))
@@ -139,21 +140,21 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		// update ip/guid/name
 		playerinfo_t& info = g_playerinfo[clientnum]; 
 
-		std::string ip = QMM_INFOVALUEFORKEY(userinfo, "ip");
+		std::string ip = QMM_INFOVALUEFORKEY(PLID, userinfo, "ip");
 		info.ip = ip.substr(0, ip.find(':'));
-		info.guid = QMM_INFOVALUEFORKEY(userinfo, "cl_guid");
-		info.name = QMM_INFOVALUEFORKEY(userinfo, "name");
+		info.guid = QMM_INFOVALUEFORKEY(PLID, userinfo, "cl_guid");
+		info.name = QMM_INFOVALUEFORKEY(PLID, userinfo, "name");
 		info.stripname = strip_codes(info.name);
 	}
 	// handle the game initialization (dependent on mod being loaded)
 	else if (cmd == GAME_INIT) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
+		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "exec %s.cfg\n", QMM_GETSTRCVAR(PLID, "mapname")));
 		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		
 		reload();
 	}
 
-	return 0;
+	QMM_RET_IGNORED(1);
 }
 
 
@@ -165,5 +166,5 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 
 // called after engine's syscall (mod->engine)
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	return 0;
+	QMM_RET_IGNORED(1);
 }

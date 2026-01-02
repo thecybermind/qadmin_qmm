@@ -5,7 +5,7 @@ https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -39,6 +39,6 @@ Created By:
 
 #define QADMIN_QMM_VERSION_DWORD	QADMIN_QMM_VERSION_MAJOR , QADMIN_QMM_VERSION_MINOR , QADMIN_QMM_VERSION_REV , 0
 #define QADMIN_QMM_COMPILE			__TIME__ " " __DATE__
-#define QADMIN_QMM_BUILDER			"cybermind"
+#define QADMIN_QMM_BUILDER			"Kevin Masterson"
 
 #endif // __QADMIN_QMM_VERSION_H__
