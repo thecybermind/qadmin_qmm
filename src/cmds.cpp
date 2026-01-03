@@ -429,17 +429,15 @@ int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args
 
 	player_clientprint(clientnum, "[QADMIN] Listing maps...\n");
 	for (int i = 1; i < numfiles; ++i) {
-#ifdef _WIN32
-#pragma warning(disable: 6054)	// dirptr may not be null-terminated below
-#endif
 		dirptr += strlen(dirptr);
 		*dirptr = '\n';
 	}
 	player_clientprint(clientnum, dirlist);
 	player_clientprint(clientnum, "\n[QADMIN] End of maps list\n");
-#endif
+
+	QMM_RET_SUPERCEDE(1);
 }
-QMM_RET_SUPERCEDE(1);
+#endif
 
 
 int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
