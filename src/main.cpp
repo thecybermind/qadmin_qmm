@@ -41,6 +41,13 @@ mod_vmMain_t g_vmMain = nullptr;
 pluginfuncs_t* g_pluginfuncs = nullptr;
 pluginvars_t* g_pluginvars = nullptr;
 
+// store the game's entity and client info
+gentity_t* g_gents = nullptr;
+intptr_t g_numgents = 0;
+intptr_t g_gentsize = 0;
+gclient_t* g_clients = nullptr;
+intptr_t g_clientsize = 0;
+
 // qadmin player info and game userinfo strings
 std::map<intptr_t, playerinfo_t> g_playerinfo;
 std::vector<userinfo_t> g_userinfo;
@@ -77,7 +84,8 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_CLIENT_DISCONNECT) {
 		intptr_t clientnum = args[0];
 #ifdef GAME_CLIENT_ENT_PTRS
-		clientnum = ((gentity_t*)clientnum)->s.number;
+		// ent->s.number is not set until CLIENT_BEGIN, so calculate based on edict_t*
+		clientnum = NUM_FROM_ENT(clientnum) - 1;
 #endif
 		if (g_playerinfo.count(clientnum))
 			g_playerinfo.erase(clientnum);
@@ -86,7 +94,8 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	else if (cmd == GAME_CLIENT_COMMAND) {
 		intptr_t clientnum = args[0];
 #ifdef GAME_CLIENT_ENT_PTRS
-		clientnum = ((gentity_t*)clientnum)->s.number;
+		// ent->s.number is not set until CLIENT_BEGIN, so calculate based on edict_t*
+		clientnum = NUM_FROM_ENT(clientnum) - 1;
 #endif
 		return handlecommand(clientnum, parse_args(0));
 	}
@@ -146,7 +155,8 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
 		intptr_t clientnum = args[0];
 #ifdef GAME_CLIENT_ENT_PTRS
-		clientnum = ((gentity_t*)clientnum)->s.number;
+		// ent->s.number is not set until CLIENT_BEGIN, so calculate based on edict_t*
+		clientnum = NUM_FROM_ENT(clientnum) - 1;
 		char* userinfo = (char*)args[1];
 #else
 		char userinfo[MAX_INFO_STRING];
