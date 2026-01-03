@@ -33,7 +33,7 @@ void vote_start(intptr_t clientnum, pfnVoteFunc callback, intptr_t seconds, int 
 	}
 	g_vote.clientnum = clientnum;
 	g_vote.votefunc = callback;
-	g_vote.finishtime = g_leveltime + (seconds * 1000);
+	g_vote.finishtime = g_leveltime + seconds;
 	g_vote.choices = choices;
 	g_vote.param = param;
 	g_vote.inuse = true;

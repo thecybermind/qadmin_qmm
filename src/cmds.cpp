@@ -37,7 +37,6 @@ void reload() {
 }
 
 
-#define usertype(x) 
 // server command to add a new user
 int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 	if (args.size() < 4) {
@@ -379,7 +378,7 @@ int admin_chat(intptr_t clientnum, int access, std::vector<std::string> args, bo
 int admin_csay(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = str_sanitize(str_join(args, 1));
 #ifdef GAME_NO_SEND_SERVER_COMMAND
-	g_syscall(G_CPRINTF, -1, PRINT_HIGH, message.c_str());
+	player_clientprint(-1, message.c_str(), false);
 #else
 	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS(PLID, "cp \"%s\n\"", message.c_str()));
 #endif
@@ -421,8 +420,8 @@ int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 #ifndef GAME_NO_FS_GETFILELIST
+int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	char dirlist[MAX_STRING_LENGTH];
 
 	int numfiles = (int)g_syscall(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
@@ -439,8 +438,8 @@ int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args
 	player_clientprint(clientnum, dirlist);
 	player_clientprint(clientnum, "\n[QADMIN] End of maps list\n");
 #endif
-	QMM_RET_SUPERCEDE(1);
 }
+QMM_RET_SUPERCEDE(1);
 
 
 int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
@@ -501,12 +500,26 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 	else
 		player_clientprint(clientnum, "[QADMIN] Slot Access   Authed Name\n");
 
-	for (auto player : players_with_name(match)) {
-		playerinfo_t& info = g_playerinfo[player];
-		if (banaccess)
-			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %-15s %s\n", player, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
-		else
-			player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %s\n", player, info.access, info.authed ? "yes" : "no", info.name.c_str()));
+	// name provided
+	if (args.size() > 1) {
+		for (auto playernum : players_with_name(match)) {
+			playerinfo_t& info = g_playerinfo[playernum];
+			if (banaccess)
+				player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %-15s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
+			else
+				player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.name.c_str()));
+		}
+	}
+	// no name, list all
+	else {
+		for (auto& playerinfo : g_playerinfo) {
+			intptr_t playernum = playerinfo.first;
+			playerinfo_t& info = playerinfo.second;
+			if (banaccess)
+				player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %-15s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
+			else
+				player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] %3d: %-8d %-6s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.name.c_str()));
+		}
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -583,7 +596,7 @@ int admin_timeleft(intptr_t clientnum, int access, std::vector<std::string> args
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] There is no time limit.\n");
 		QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
 	}
-	time_t timeleft = (timelimit * 60) - (time(nullptr) - g_mapstart);
+	time_t timeleft = (timelimit * 60) - (g_leveltime - g_mapstart);
 
 	if (timeleft <= 0)
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] Time limit has been reached\n");
@@ -618,9 +631,11 @@ int admin_vote_map(intptr_t clientnum, int access, std::vector<std::string> args
 		QMM_RET_SUPERCEDE(1);
 	}
 
-	player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to changed map to %s\n", time, map.c_str()));
-	player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
-	
+	if (!g_vote.inuse) {
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to changed map to %s\n", time, map.c_str()));
+		player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
+	}
+
 	vote_start(clientnum, handle_vote_map, time, 2, (void*)&map);
 
 	QMM_RET_SUPERCEDE(1);
@@ -668,9 +683,12 @@ int admin_vote_kick(intptr_t clientnum, int access, std::vector<std::string> arg
 		QMM_RET_SUPERCEDE(1);
 	}
 
-	player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to kick %s\n", votetime, g_playerinfo[targetclient].name.c_str()));
-	player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
-	vote_start(clientnum, handle_vote_kick, votetime, 2, (void*)(intptr_t)targetclient);
+	if (!g_vote.inuse) {
+		player_clientprint(-1, QMM_VARARGS(PLID, "[QADMIN] A %d second vote has been started to kick %s\n", votetime, g_playerinfo[targetclient].name.c_str()));
+		player_clientprint(-1, "[QADMIN] Type 'castvote 1' for YES, or 'castvote 2' for NO\n");
+	}
+	
+	vote_start(clientnum, handle_vote_kick, votetime, 2, (void*)targetclient);
 
 	QMM_RET_SUPERCEDE(1);
 }

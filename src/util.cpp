@@ -22,11 +22,6 @@ Created By:
 #include "main.h"
 #include "util.h"
 
-#ifdef WIN32
- #ifndef vsnprintf
-  #define vsnprintf _vsnprintf
- #endif
-#endif
 
 bool player_has_access(intptr_t clientnum, int reqaccess) {
 	if (clientnum == SERVER_CONSOLE)
@@ -49,6 +44,12 @@ void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
 		return;
 	}
 #ifdef GAME_NO_SEND_SERVER_COMMAND
+	if (clientnum == -1) {
+		for (auto& p : g_playerinfo) {
+			g_syscall(G_CPRINTF, p.first, PRINT_HIGH, "%s", msg);
+		}
+		return;
+	}
 	g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
 #else
 	if (chat)
@@ -60,10 +61,6 @@ void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
 
 
 void player_kick(intptr_t clientnum, std::string message) {
-#ifdef GAME_CLIENT_ENT_PTRS
-	edict_t* ent = (edict_t*)clientnum;
-	clientnum = ent->s.number;
-#endif
 	g_syscall(G_DROP_CLIENT, clientnum, message.c_str());
 }
 
@@ -93,12 +90,12 @@ std::vector<intptr_t> players_with_name(std::string find) {
 
 	for (auto& playerinfo : g_playerinfo) {
 		// for exact match, return just this player
-		if (str_striequal(find, playerinfo.second.name) || str_striequal(find, playerinfo.second.stripname)) {
+		if (str_striequal(playerinfo.second.name, find) || str_striequal(playerinfo.second.stripname, find)) {
 			ret.clear();
 			ret.push_back(playerinfo.first);
 			return ret;
 		}
-		else if (str_stristr(find, playerinfo.second.name) || str_stristr(find, playerinfo.second.stripname)) {
+		else if (str_stristr(playerinfo.second.name, find) || str_stristr(playerinfo.second.stripname, find)) {
 			ret.push_back(playerinfo.first);
 		}
 	}
@@ -121,14 +118,22 @@ std::vector<intptr_t> players_with_ip(std::string find) {
 
 
 bool is_valid_map(std::string map) {
-	fileHandle_t fmap;
+// games that don't have readability into pak/pk3 files, just return true
 #ifdef GAME_MOHAA
-	intptr_t mapsize = g_syscall(G_FS_FOPEN_FILE_QMM, QMM_VARARGS(PLID, "maps\\%s", map.c_str()), &fmap, FS_READ);
-	g_syscall(G_FS_FCLOSE_FILE_QMM, fmap);
+	return true;
 #else
-	int mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS(PLID, "maps\\%s", map.c_str()), &fmap, FS_READ);
-	g_syscall(G_FS_FCLOSE_FILE, fmap);
+	if (G_FS_FOPEN_FILE < 0)
+		return true;
 #endif
+
+	fileHandle_t fmap;
+
+	intptr_t mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS(PLID, "maps/%s.bsp", map.c_str()), &fmap, FS_READ);
+	// doesn't exist, return immediately
+	if (mapsize < 0)
+		return false;
+	// if file was 0 bytes, we still need to close, but return false
+	g_syscall(G_FS_FCLOSE_FILE, fmap);
 	return mapsize ? true : false;
 }
 
@@ -170,21 +175,24 @@ int str_striequal(std::string s1, std::string s2) {
 
 std::vector<std::string> parse_str(std::string str, char sep) {
 	std::vector<std::string> ret;
-
+	
 	size_t f = str.find(sep);
 	while (f != std::string::npos) {
 		ret.push_back(str.substr(0, f));
 		str = str.substr(f + 1);
 		f = str.find(sep);
 	}
+	if (str.size())
+		ret.push_back(str);
 
 	return ret;
 }
 
 
-std::vector<std::string> parse_args(int start, int end) {
-	if (end < 0)
-		end = (int)g_syscall(G_ARGC);
+// append all args to a single string, separated by spaces
+// this is done so say commands which have the entire text in arg1 will still parse correctly
+std::vector<std::string> parse_args(int start) {
+	int end = (int)g_syscall(G_ARGC) - 1;
 
 	char temp[MAX_STRING_LENGTH];
 	std::string s;

@@ -41,9 +41,11 @@ mod_vmMain_t g_vmMain = nullptr;
 pluginfuncs_t* g_pluginfuncs = nullptr;
 pluginvars_t* g_pluginvars = nullptr;
 
+// qadmin player info and game userinfo strings
 std::map<intptr_t, playerinfo_t> g_playerinfo;
 std::vector<userinfo_t> g_userinfo;
 
+// time the 
 time_t g_mapstart;
 time_t g_leveltime;
 
@@ -60,19 +62,6 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
 
-	QMM_WRITEQMMLOG(PLID, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
-
-	// make version cvar
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
-	g_syscall(G_CVAR_SET, "admin_version", QADMIN_QMM_VERSION);
-
-	// other cvars
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_kick_time", "60", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_map_time", "60", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
-	g_syscall(G_CVAR_REGISTER, nullptr, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
-
 	return 1;
 }
 
@@ -86,27 +75,56 @@ C_DLLEXPORT void QMM_Detach() {
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
-		if (g_playerinfo.count(args[0]))
-			g_playerinfo.erase(args[0]);
+		intptr_t clientnum = args[0];
+#ifdef GAME_CLIENT_ENT_PTRS
+		clientnum = ((gentity_t*)clientnum)->s.number;
+#endif
+		if (g_playerinfo.count(clientnum))
+			g_playerinfo.erase(clientnum);
 	}
 	// handle client commands
 	else if (cmd == GAME_CLIENT_COMMAND) {
-		return handlecommand(args[0], parse_args(0));
+		intptr_t clientnum = args[0];
+#ifdef GAME_CLIENT_ENT_PTRS
+		clientnum = ((gentity_t*)clientnum)->s.number;
+#endif
+		return handlecommand(clientnum, parse_args(0));
 	}
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	else if (cmd == GAME_CONSOLE_COMMAND) {
 		char command[MAX_COMMAND_LENGTH];
-		QMM_ARGV(PLID, 0, command, sizeof(command));
+		int firstarg = 0;	// increased to 1 if first arg is "sv", added to parse_args() argument
+		QMM_ARGV(PLID, firstarg, command, sizeof(command));
+
+		// if command is "sv", then get the next arg
+		// idTech2 games use "sv" on listen server to run a server command
+		if (str_striequal(command, "sv")) {
+			firstarg++;
+			QMM_ARGV(PLID, firstarg, command, sizeof(command));
+		}
 		if (str_striequal(command, "admin_cmd") || str_striequal(command, "a_c"))
-			return handlecommand(SERVER_CONSOLE, parse_args(1));
+			return handlecommand(SERVER_CONSOLE, parse_args(1 + firstarg));
 		else if (str_striequal(command, "admin_adduser_ip"))
-			return admin_adduser(au_ip, parse_args(0));
+			return admin_adduser(au_ip, parse_args(0 + firstarg));
 		else if (str_striequal(command, "admin_adduser_name"))
-			return admin_adduser(au_name, parse_args(0));
+			return admin_adduser(au_name, parse_args(0 + firstarg));
 		else if (str_striequal(command, "admin_adduser_id"))
-			return admin_adduser(au_id, parse_args(0));
+			return admin_adduser(au_id, parse_args(0 + firstarg));
 	}
 	else if (cmd == GAME_INIT) {
+		QMM_WRITEQMMLOG(PLID, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
+
+		// make version cvar
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
+		g_syscall(G_CVAR_SET, "admin_version", QADMIN_QMM_VERSION);
+
+		// other cvars
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_kick_time", "30", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_map_time", "60", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
+
 		time(&g_mapstart);
 		time(&g_leveltime);
 	}
@@ -127,9 +145,13 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	// (this is here in _Post so that the game has a chance to do various info checking before we get the values)
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
 		intptr_t clientnum = args[0];
-
+#ifdef GAME_CLIENT_ENT_PTRS
+		clientnum = ((gentity_t*)clientnum)->s.number;
+		char* userinfo = (char*)args[1];
+#else
 		char userinfo[MAX_INFO_STRING];
 		g_syscall(G_GET_USERINFO, clientnum, userinfo, sizeof(userinfo));
+#endif
 
 		// if playerinfo is missing, make a new one
 		if (!g_playerinfo.count(clientnum)) {
@@ -141,7 +163,8 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		playerinfo_t& info = g_playerinfo[clientnum]; 
 
 		std::string ip = QMM_INFOVALUEFORKEY(PLID, userinfo, "ip");
-		info.ip = ip.substr(0, ip.find(':'));
+		size_t colon = ip.find(':');
+		info.ip = colon != std::string::npos ? ip.substr(0, colon) : ip;
 		info.guid = QMM_INFOVALUEFORKEY(PLID, userinfo, "cl_guid");
 		info.name = QMM_INFOVALUEFORKEY(PLID, userinfo, "name");
 		info.stripname = strip_codes(info.name);
@@ -160,6 +183,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 
 // called before engine's syscall (mod->engine)
 C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
+
 	QMM_RET_IGNORED(0);
 }
 

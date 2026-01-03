@@ -30,7 +30,7 @@ int str_stricmp(std::string s1, std::string s2);
 int str_striequal(std::string s1, std::string s2);
 
 std::vector<std::string> parse_str(std::string str, char sep = ' ');
-std::vector<std::string> parse_args(int start, int end = -1);
+std::vector<std::string> parse_args(int start);
 
 std::string str_join(std::vector<std::string> arr, size_t start = 0, char delim = ' ');
 
