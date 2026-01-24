@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __QADMIN_QMM_UTIL_H__
-#define __QADMIN_QMM_UTIL_H__
+#ifndef QADMIN_QMM_UTIL_H
+#define QADMIN_QMM_UTIL_H
 
 #include <vector>
 #include <string>
@@ -34,4 +34,4 @@ std::vector<std::string> parse_args(int start);
 
 std::string str_join(std::vector<std::string> arr, size_t start = 0, char delim = ' ');
 
-#endif // __QADMIN_QMM_UTIL_H__
+#endif // QADMIN_QMM_UTIL_H

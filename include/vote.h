@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __QADMIN_QMM_VOTE_H__
-#define __QADMIN_QMM_VOTE_H__
+#ifndef QADMIN_QMM_VOTE_H
+#define QADMIN_QMM_VOTE_H
 
 #define MAX_CHOICES 9
 
@@ -34,4 +34,4 @@ void vote_start(intptr_t clientnum, pfnVoteFunc callback, intptr_t seconds, int 
 void vote_add(intptr_t clientnum, int vote);
 void vote_finish();
 
-#endif // __QADMIN_QMM_VOTE_H__
+#endif // QADMIN_QMM_VOTE_H

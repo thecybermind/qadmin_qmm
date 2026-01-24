@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __QADMIN_QMM_MAIN_H__
-#define __QADMIN_QMM_MAIN_H__
+#ifndef QADMIN_QMM_MAIN_H
+#define QADMIN_QMM_MAIN_H
 
 #include <vector>
 #include <map>
@@ -85,4 +85,4 @@ extern time_t g_leveltime;
 
 extern std::vector<std::string> g_gaggedCmds;
 
-#endif // __QADMIN_QMM_MAIN_H__
+#endif // QADMIN_QMM_MAIN_H

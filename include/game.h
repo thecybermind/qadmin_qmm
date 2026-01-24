@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __QADMIN_QMM_GAME_H__
-#define __QADMIN_QMM_GAME_H__
+#ifndef QADMIN_QMM_GAME_H
+#define QADMIN_QMM_GAME_H
 
 #if defined(GAME_COD11MP)
     #include <cod11mp/bgame/bg_local.h>
@@ -100,4 +100,4 @@ Created By:
     #include <wet/game/g_local.h>
 #endif
 
-#endif // __QADMIN_QMM_GAME_H__
+#endif // QADMIN_QMM_GAME_H

@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __QADMIN_QMM_CMD_H__
-#define __QADMIN_QMM_CMD_H__
+#ifndef QADMIN_QMM_CMD_H
+#define QADMIN_QMM_CMD_H
 
 #include <vector>
 #include <string>
@@ -36,4 +36,4 @@ void reload();
 int handlecommand(intptr_t clientnum, std::vector<std::string> args);
 int admin_adduser(addusertype_t type, std::vector<std::string> args);
 
-#endif // __QADMIN_QMM_UTIL_H__
+#endif // QADMIN_QMM_UTIL_H
