@@ -124,8 +124,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		QMM_WRITEQMMLOG(PLID, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
 
 		// make version cvar
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE);
-		g_syscall(G_CVAR_SET, "admin_version", QADMIN_QMM_VERSION);
+		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM);
 
 		// other cvars
 		g_syscall(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
