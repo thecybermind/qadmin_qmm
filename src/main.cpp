@@ -103,13 +103,13 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	else if (cmd == GAME_CONSOLE_COMMAND) {
 		char command[MAX_COMMAND_LENGTH];
 		int firstarg = 0;	// increased to 1 if first arg is "sv", added to parse_args() argument
-		QMM_ARGV(PLID, firstarg, command, sizeof(command));
+		QMM_ARGV(firstarg, command, sizeof(command));
 
 		// if command is "sv", then get the next arg
 		// idTech2 games use "sv" on listen server to run a server command
 		if (str_striequal(command, "sv")) {
 			firstarg++;
-			QMM_ARGV(PLID, firstarg, command, sizeof(command));
+			QMM_ARGV(firstarg, command, sizeof(command));
 		}
 		if (str_striequal(command, "admin_cmd") || str_striequal(command, "a_c"))
 			return handlecommand(SERVER_CONSOLE, parse_args(1 + firstarg));
@@ -121,7 +121,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 			return admin_adduser(au_id, parse_args(0 + firstarg));
 	}
 	else if (cmd == GAME_INIT) {
-		QMM_WRITEQMMLOG(PLID, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
+		QMM_WRITEQMMLOG("QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
 
 		// make version cvar
 		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM);
@@ -171,16 +171,16 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		// update ip/guid/name
 		playerinfo_t& info = g_playerinfo[clientnum]; 
 
-		std::string ip = QMM_INFOVALUEFORKEY(PLID, userinfo, "ip");
+		std::string ip = QMM_INFOVALUEFORKEY(userinfo, "ip");
 		size_t colon = ip.find(':');
 		info.ip = colon != std::string::npos ? ip.substr(0, colon) : ip;
-		info.guid = QMM_INFOVALUEFORKEY(PLID, userinfo, "cl_guid");
-		info.name = QMM_INFOVALUEFORKEY(PLID, userinfo, "name");
+		info.guid = QMM_INFOVALUEFORKEY(userinfo, "cl_guid");
+		info.name = QMM_INFOVALUEFORKEY(userinfo, "name");
 		info.stripname = strip_codes(info.name);
 	}
 	// handle the game initialization (dependent on mod being loaded)
 	else if (cmd == GAME_INIT) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS(PLID, "exec %s.cfg\n", QMM_GETSTRCVAR(PLID, "mapname")));
+		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
 		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		
 		reload();

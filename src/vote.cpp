@@ -49,17 +49,17 @@ void vote_add(intptr_t clientnum, int vote) {
 	}
 
 	if (g_vote.votes.count(clientnum)) {
-		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] You have already voted for %d\n", g_vote.votes[clientnum]));
+		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You have already voted for %d\n", g_vote.votes[clientnum]));
 		return;
 	}
 
 	if (vote < 1 || vote > g_vote.choices) {
-		player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Invalid vote option, choose from 1-%d\n", g_vote.choices));
+		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Invalid vote option, choose from 1-%d\n", g_vote.choices));
 		return;
 	}
 
 	g_vote.votes[clientnum] = vote;
-	player_clientprint(clientnum, QMM_VARARGS(PLID, "[QADMIN] Vote counted for %d\n", vote));
+	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Vote counted for %d\n", vote));
 }
 
 
