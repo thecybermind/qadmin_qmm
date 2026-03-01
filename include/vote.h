@@ -19,7 +19,7 @@ Created By:
 
 typedef void (*pfnVoteFunc)(intptr_t winner, int winvotes, int totalvotes, void* param);
 
-typedef struct voteinfo_s {
+typedef struct {
 	bool inuse;
 	time_t finishtime;
 	pfnVoteFunc votefunc;
@@ -27,8 +27,8 @@ typedef struct voteinfo_s {
 	void* param;
 	intptr_t clientnum;
 	std::map<intptr_t, int> votes;	// votecount[clientnum] = choice
-} voteinfo_t;
-extern voteinfo_t g_vote;
+} vote_info;
+extern vote_info g_vote;
 
 void vote_start(intptr_t clientnum, pfnVoteFunc callback, intptr_t seconds, int choices, void* param);
 void vote_add(intptr_t clientnum, int vote);

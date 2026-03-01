@@ -22,7 +22,7 @@ Created By:
 #include "vote.h"
 #include "util.h"
 
-voteinfo_t g_vote;
+vote_info g_vote;
 
 
 // initiate a vote

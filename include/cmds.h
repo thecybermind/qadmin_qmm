@@ -20,20 +20,20 @@ Created By:
 typedef int (*pfnAdminCmd)(intptr_t clientnum, int access, std::vector<std::string> args, bool say);		// signature of a command handler
 
 // command handler info
-typedef struct admincmd_s {
+typedef struct {
 	const char* cmd;
 	pfnAdminCmd func;
 	int reqaccess;
 	int minargs;
 	const char* usage;
 	const char* help;
-} admincmd_t;
+} cmd_info;
 
-extern std::vector<admincmd_t> g_admincmds;
-extern std::vector<admincmd_t> g_saycmds;
+extern std::vector<cmd_info> g_admincmds;
+extern std::vector<cmd_info> g_saycmds;
 
 void reload();
 int handlecommand(intptr_t clientnum, std::vector<std::string> args);
-int admin_adduser(addusertype_t type, std::vector<std::string> args);
+int admin_adduser(addusertype type, std::vector<std::string> args);
 
 #endif // QADMIN_QMM_UTIL_H

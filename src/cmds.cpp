@@ -38,7 +38,7 @@ void reload() {
 
 
 // server command to add a new user
-int admin_adduser(addusertype_t type, std::vector<std::string> args) {
+int admin_adduser(addusertype type, std::vector<std::string> args) {
 	if (args.size() < 4) {
 		QMM_WRITEQMMLOG(QMM_VARARGS("Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str()), QMMLOG_INFO);
 		QMM_RET_SUPERCEDE(1);
@@ -56,7 +56,7 @@ int admin_adduser(addusertype_t type, std::vector<std::string> args) {
 		}
 	}
 
-	userinfo_t newuser = { user, pass, access, type };
+	user_info newuser = { user, pass, access, type };
 	g_userinfo.push_back(newuser);
 
 	QMM_WRITEQMMLOG(QMM_VARARGS("New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access), QMMLOG_INFO);
@@ -163,7 +163,7 @@ int admin_login(intptr_t clientnum, int access, std::vector<std::string> args, b
 
 		if (str_striequal(info.user, match) && str_striequal(info.pass, password)) {
 			g_playerinfo[clientnum].access = info.access;
-			g_playerinfo[clientnum].authed = 1;
+			g_playerinfo[clientnum].authed = true;
 			player_clientprint(clientnum, QMM_VARARGS("[QADMIN] You have successfully authenticated. You now have %d access.\n", g_playerinfo[clientnum].access));
 			QMM_RET_SUPERCEDE(1);
 		}
@@ -502,7 +502,7 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 	// name provided
 	if (args.size() > 1) {
 		for (auto playernum : players_with_name(match)) {
-			playerinfo_t& info = g_playerinfo[playernum];
+			player_info& info = g_playerinfo[playernum];
 			if (banaccess)
 				player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %3d: %-8d %-6s %-15s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
 			else
@@ -513,7 +513,7 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 	else {
 		for (auto& playerinfo : g_playerinfo) {
 			intptr_t playernum = playerinfo.first;
-			playerinfo_t& info = playerinfo.second;
+			player_info& info = playerinfo.second;
 			if (banaccess)
 				player_clientprint(clientnum, QMM_VARARGS("[QADMIN] %3d: %-8d %-6s %-15s %s\n", playernum, info.access, info.authed ? "yes" : "no", info.ip.c_str(), info.name.c_str()));
 			else
@@ -756,7 +756,7 @@ int castvote(intptr_t clientnum, int access, std::vector<std::string> args, bool
 
 // register command handlers
 // moved into alphabetical order to make admin_help a bit easier
-std::vector<admincmd_t> g_admincmds = {
+std::vector<cmd_info> g_admincmds = {
 	{ "admin_ban",			admin_ban,			LEVEL_256,	1, "admin_ban <name> [message]", "Bans the specified user by IP" },
 	{ "admin_banip",		admin_banip,		LEVEL_256,	1, "admin_banip <ip> [message]", "Bans the specified IP" },
 	{ "admin_cfg",			admin_cfg,			LEVEL_512,	1, "admin_cfg <file.cfg>", "Executes the given .cfg file on the server" },
@@ -796,7 +796,7 @@ std::vector<admincmd_t> g_admincmds = {
 	{ "say",				say,				LEVEL_0,	0, nullptr, nullptr },
 };
 
-std::vector<admincmd_t> g_saycmds = {
+std::vector<cmd_info> g_saycmds = {
 	{ "admin_login",	admin_login,			LEVEL_0,	1, nullptr, nullptr },
 	{ "castvote",		castvote,				LEVEL_1,	1, nullptr, nullptr },
 	{ "currentmap",		admin_currentmap,		LEVEL_0,	0, nullptr, nullptr },

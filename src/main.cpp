@@ -25,8 +25,8 @@ Created By:
 #include "vote.h"
 #include "util.h"
 
-pluginres_t* g_result = nullptr;
-plugininfo_t g_plugininfo = {
+plugin_res* g_result = nullptr;
+plugin_info g_plugininfo = {
 	QMM_PIFV_MAJOR,									// plugin interface version major
 	QMM_PIFV_MINOR,									// plugin interface version minor
 	"QAdmin",										// name of plugin
@@ -36,10 +36,10 @@ plugininfo_t g_plugininfo = {
 	"https://github.com/thecybermind/qadmin_qmm/",	// website of plugin
 	"QADMIN",										// logtag of plugin
 };
-eng_syscall_t g_syscall = nullptr;
-mod_vmMain_t g_vmMain = nullptr;
-pluginfuncs_t* g_pluginfuncs = nullptr;
-pluginvars_t* g_pluginvars = nullptr;
+eng_syscall g_syscall = nullptr;
+mod_vmMain g_vmMain = nullptr;
+plugin_funcs* g_pluginfuncs = nullptr;
+plugin_vars* g_pluginvars = nullptr;
 
 // store the game's entity and client info
 gentity_t* g_gents = nullptr;
@@ -49,8 +49,8 @@ gclient_t* g_clients = nullptr;
 intptr_t g_clientsize = 0;
 
 // qadmin player info and game userinfo strings
-std::map<intptr_t, playerinfo_t> g_playerinfo;
-std::vector<userinfo_t> g_userinfo;
+std::map<intptr_t, player_info> g_playerinfo;
+std::vector<user_info> g_userinfo;
 
 // time the 
 time_t g_mapstart;
@@ -60,13 +60,13 @@ std::vector<std::string> g_gaggedCmds;
 
 
 // first function called in plugin, give QMM the plugin info
-C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
+C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
 
 // second function called, save pointers
-C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
+C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, mod_vmMain modfunc, plugin_res* presult, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
 	QMM_SAVE_VARS();
 
 	return 1;
@@ -166,10 +166,12 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 		if (!g_playerinfo.count(clientnum)) {
 			g_playerinfo[clientnum] = {};
 			g_playerinfo[clientnum].access = 0;
+			g_playerinfo[clientnum].authed = false;
+			g_playerinfo[clientnum].gagged = false;
 		}
 		
 		// update ip/guid/name
-		playerinfo_t& info = g_playerinfo[clientnum]; 
+		player_info& info = g_playerinfo[clientnum]; 
 
 		std::string ip = QMM_INFOVALUEFORKEY(userinfo, "ip");
 		size_t colon = ip.find(':');

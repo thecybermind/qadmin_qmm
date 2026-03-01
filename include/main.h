@@ -28,11 +28,11 @@ Created By:
 
 #define SERVER_CONSOLE -2
 
-typedef enum addusertype_e {
+typedef enum {
 	au_ip = 1,
 	au_name = 2,
 	au_id = 3
-} addusertype_t;
+} addusertype;
 
 #ifdef WIN32
  #define strcasecmp stricmp
@@ -60,25 +60,25 @@ typedef enum addusertype_e {
 
 #define ACCESS_IMMUNITY	LEVEL_1024
 
-typedef struct playerinfo_s {
+typedef struct {
 	std::string guid;
 	std::string ip;
 	std::string name;
 	std::string stripname;
-	int access = 0;
-	bool authed = false;
-	bool gagged = false;
-} playerinfo_t;
+	int access;
+	bool authed;
+	bool gagged;
+} player_info;
 
-typedef struct userinfo_s {
+typedef struct {
 	std::string user;
 	std::string pass;
 	int access;
-	addusertype_t type;
-} userinfo_t;
+	addusertype type;
+} user_info;
 
-extern std::map<intptr_t, playerinfo_t> g_playerinfo;
-extern std::vector<userinfo_t> g_userinfo;
+extern std::map<intptr_t, player_info> g_playerinfo;
+extern std::vector<user_info> g_userinfo;
 
 extern time_t g_mapstart;
 extern time_t g_leveltime;
