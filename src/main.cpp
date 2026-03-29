@@ -121,7 +121,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 			return admin_adduser(au_id, parse_args(0 + firstarg));
 	}
 	else if (cmd == GAME_INIT) {
-		QMM_WRITEQMMLOG("QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
+		QMM_WRITEQMMLOG(QMMLOG_INFO, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n");
 
 		// make version cvar
 		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM);

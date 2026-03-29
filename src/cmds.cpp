@@ -16,6 +16,7 @@ Created By:
 #include "version.h"
 #include "game.h"
 
+#include <cstring>	// strlen
 #include <time.h>
 #include "main.h"
 #include "cmds.h"
@@ -33,14 +34,14 @@ void reload() {
 	// refresh gagged command list
 	g_gaggedCmds = parse_str(QMM_GETSTRCVAR("admin_gagged_cmds"), ',');
 
-	QMM_WRITEQMMLOG("Configs/cvars (re)loaded\n", QMMLOG_INFO);
+	QMM_WRITEQMMLOG(QMMLOG_INFO, "Configs/cvars (re)loaded\n");
 }
 
 
 // server command to add a new user
 int admin_adduser(addusertype type, std::vector<std::string> args) {
 	if (args.size() < 4) {
-		QMM_WRITEQMMLOG(QMM_VARARGS("Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str()), QMMLOG_INFO);
+		QMM_WRITEQMMLOG(QMMLOG_INFO, "Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str());
 		QMM_RET_SUPERCEDE(1);
 	}
 	std::string user = args[1];
@@ -51,7 +52,7 @@ int admin_adduser(addusertype type, std::vector<std::string> args) {
 
 	for (auto& info : g_userinfo) {
 		if (info.type == type && str_striequal(user, info.user)) {
-			QMM_WRITEQMMLOG(QMM_VARARGS("User %s entry already exists for \"%s\"\n", strtype, user.c_str()), QMMLOG_INFO);
+			QMM_WRITEQMMLOG(QMMLOG_INFO, "User %s entry already exists for \"%s\"\n", strtype, user.c_str());
 			QMM_RET_SUPERCEDE(1);
 		}
 	}
@@ -59,7 +60,7 @@ int admin_adduser(addusertype type, std::vector<std::string> args) {
 	user_info newuser = { user, pass, access, type };
 	g_userinfo.push_back(newuser);
 
-	QMM_WRITEQMMLOG(QMM_VARARGS("New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access), QMMLOG_INFO);
+	QMM_WRITEQMMLOG(QMMLOG_INFO, "New user %s entry added for \"%s\" (access=%d)\n", strtype, user.c_str(), access);
 	QMM_RET_SUPERCEDE(1);
 }
 
