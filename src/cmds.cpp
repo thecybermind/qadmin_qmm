@@ -16,6 +16,7 @@ Created By:
 #include "version.h"
 #include "game.h"
 
+#include <cstring>	// strlen
 #include <time.h>
 #include "main.h"
 #include "cmds.h"
