@@ -39,7 +39,7 @@ void reload() {
 
 
 // server command to add a new user
-int admin_adduser(addusertype type, std::vector<std::string> args) {
+int admin_adduser(result_vars* results, addusertype type, std::vector<std::string> args) {
 	if (args.size() < 4) {
 		QMM_WRITEQMMLOG(QMMLOG_INFO, "Not enough parameters for %s <name|ip|id> <pass> <access>\n", args[0].c_str());
 		QMM_RET_SUPERCEDE(1);
@@ -68,7 +68,7 @@ int admin_adduser(addusertype type, std::vector<std::string> args) {
 // main command handler
 // clientnum = client that did the command
 // args = all args from engine (or say cmd)
-int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
+int handlecommand(result_vars* results, intptr_t clientnum, std::vector<std::string> args) {
 	std::string cmd = args[0];
 
 	for (auto& admincmd : g_admincmds) {
@@ -82,7 +82,7 @@ int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
 					QMM_RET_SUPERCEDE(1);
 				}
 				else
-					return (admincmd.func)(clientnum, admincmd.reqaccess, args, false);		// false = console command (not say)
+					return (admincmd.func)(results, clientnum, admincmd.reqaccess, args, false);		// false = console command (not say)
 			}
 
 			// if client doesn't have access, give warning message
@@ -111,7 +111,7 @@ int handlecommand(intptr_t clientnum, std::vector<std::string> args) {
 // clientnum = client that did the command
 // access = access required to run this command
 // args = all command args (include command in [0])
-int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_help(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	int start = 1;
 	if (args.size() > 1)
 		start = atoi(args[1].c_str());
@@ -142,7 +142,7 @@ int admin_help(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_login(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_login(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	if (clientnum == SERVER_CONSOLE) {
 		player_clientprint(clientnum, "[QADMIN] Trying to login from the server console, eh?\n");
 		QMM_RET_SUPERCEDE(1);
@@ -174,7 +174,7 @@ int admin_login(intptr_t clientnum, int access, std::vector<std::string> args, b
 }
 
 
-int admin_ban(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_ban(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string bancmd = args[0];
 	std::string user = args[1];
 
@@ -234,7 +234,7 @@ int admin_ban(intptr_t clientnum, int access, std::vector<std::string> args, boo
 }
 
 
-int admin_banip(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_banip(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string bancmd = args[0];
 	std::string user = args[1];
 
@@ -275,7 +275,7 @@ int admin_banip(intptr_t clientnum, int access, std::vector<std::string> args, b
 }
 
 
-int admin_unban(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_unban(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string ip = str_sanitize(args[1]);
 
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("removeip \"%s\"\n", ip.c_str()));
@@ -285,7 +285,7 @@ int admin_unban(intptr_t clientnum, int access, std::vector<std::string> args, b
 }
 
 
-int admin_cfg(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_cfg(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string file = str_sanitize(args[1]);
 
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec \"%s\"\n", file.c_str()));
@@ -294,7 +294,7 @@ int admin_cfg(intptr_t clientnum, int access, std::vector<std::string> args, boo
 }
 
 
-int admin_rcon(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_rcon(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string str = str_join(args, 1);
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("%s\n", str.c_str()));
 
@@ -302,35 +302,35 @@ int admin_rcon(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_hostname(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_hostname(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "sv_hostname", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_friendlyfire(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_friendlyfire(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "g_friendlyfire", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_gravity(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_gravity(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "g_gravity", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_gametype(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_gametype(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "g_gametype", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_map(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_map(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string map = str_sanitize(args[1]);
 	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", args[1].c_str()));
 
@@ -338,21 +338,21 @@ int admin_map(intptr_t clientnum, int access, std::vector<std::string> args, boo
 }
 
 
-int admin_fraglimit(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_fraglimit(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "fraglimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_timelimit(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_timelimit(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	g_syscall(G_CVAR_SET, "timelimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_pass(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_pass(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	if (str_striequal(args[0], "admin_pass")) {
 		g_syscall(G_CVAR_SET, "g_password", args[1].c_str());
 		g_syscall(G_CVAR_SET, "g_needpass", "1");
@@ -365,7 +365,7 @@ int admin_pass(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_chat(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_chat(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = str_sanitize(str_join(args, 1));
 	for (auto& playerinfo : g_playerinfo) {
 		if (player_has_access(playerinfo.first, access))
@@ -376,7 +376,7 @@ int admin_chat(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_csay(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_csay(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = str_sanitize(str_join(args, 1));
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 	player_clientprint(-1, message.c_str(), false);
@@ -388,7 +388,7 @@ int admin_csay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_say(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_say(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string message = str_sanitize(str_join(args, 1));
 	player_clientprint(-1, message.c_str(), true);
 
@@ -396,7 +396,7 @@ int admin_say(intptr_t clientnum, int access, std::vector<std::string> args, boo
 }
 
 
-int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_psay(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string user = args[1];
 
 	std::vector<intptr_t> targets = players_with_name(user);
@@ -422,7 +422,7 @@ int admin_psay(intptr_t clientnum, int access, std::vector<std::string> args, bo
 
 
 #ifndef GAME_NO_FS_GETFILELIST
-int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_listmaps(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	char dirlist[MAX_STRING_LENGTH];
 
 	int numfiles = (int)g_syscall(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
@@ -442,7 +442,7 @@ int admin_listmaps(intptr_t clientnum, int access, std::vector<std::string> args
 #endif
 
 
-int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_kick(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string kickcmd = args[0];
 	std::string user = args[1];
 
@@ -474,14 +474,14 @@ int admin_kick(intptr_t clientnum, int access, std::vector<std::string> args, bo
 }
 
 
-int admin_reload(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_reload(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	reload();
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
-int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_userlist(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string match = "";
 
 	int banaccess = player_has_access(clientnum, LEVEL_256);
@@ -526,7 +526,7 @@ int admin_userlist(intptr_t clientnum, int access, std::vector<std::string> args
 }
 
 
-int admin_gag(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_gag(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string gagcmd = args[0];
 	std::string user = args[1];
 
@@ -557,7 +557,7 @@ int admin_gag(intptr_t clientnum, int access, std::vector<std::string> args, boo
 }
 
 
-int admin_ungag(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_ungag(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string ungagcmd = args[0];
 	std::string user = args[1];
 
@@ -584,13 +584,13 @@ int admin_ungag(intptr_t clientnum, int access, std::vector<std::string> args, b
 }
 
 
-int admin_currentmap(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_currentmap(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	player_clientprint(say ? -1 : clientnum, QMM_VARARGS("[QADMIN] The current map is: %s\n", QMM_GETSTRCVAR("mapname")));
 	QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
 }
 
 
-int admin_timeleft(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_timeleft(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	intptr_t timelimit = g_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, "timelimit");
 	if (!timelimit) {
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] There is no time limit.\n");
@@ -618,7 +618,7 @@ void handle_vote_map(intptr_t winner, int winvotes, int totalvotes, void* param)
 }
 
 
-int admin_vote_map(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_vote_map(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	// this is static so that it still exists when passed to handle_vote_map as param
 	static std::string map;
 
@@ -659,7 +659,7 @@ void handle_vote_kick(intptr_t winner, int winvotes, int totalvotes, void* param
 }
 
 
-int admin_vote_kick(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_vote_kick(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	int votetime = (int)QMM_GETINTCVAR("admin_vote_kick_time");
 	std::string user = args[1];
 
@@ -694,7 +694,7 @@ int admin_vote_kick(intptr_t clientnum, int access, std::vector<std::string> arg
 }
 
 
-int admin_vote_abort(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int admin_vote_abort(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	player_clientprint(-1, "[QADMIN] The current vote has been canceled\n");
 	g_vote.inuse = false;
 
@@ -703,7 +703,7 @@ int admin_vote_abort(intptr_t clientnum, int access, std::vector<std::string> ar
 
 
 // say handler (need to handle subcommands)
-int say(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int say(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	if (g_playerinfo[clientnum].gagged) {
 		player_clientprint(clientnum, "[QADMIN] Sorry, you have been gagged.\n");
 		QMM_RET_SUPERCEDE(1);
@@ -728,7 +728,7 @@ int say(intptr_t clientnum, int access, std::vector<std::string> args, bool say)
 				if ((int)args.size() < (saycmd.minargs + 1))
 					QMM_RET_IGNORED(0);
 				else
-					return (saycmd.func)(clientnum, saycmd.reqaccess, args, true);	// true = say command
+					return (saycmd.func)(results, clientnum, saycmd.reqaccess, args, true);	// true = say command
 			}
 
 			// if client doesn't have access, give warning message
@@ -742,7 +742,7 @@ int say(intptr_t clientnum, int access, std::vector<std::string> args, bool say)
 }
 
 
-int castvote(intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
+int castvote(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	if (clientnum == SERVER_CONSOLE) {
 		player_clientprint(clientnum, "[QADMIN] Trying to vote from the server console, eh?\n");
 		QMM_RET_SUPERCEDE(1);

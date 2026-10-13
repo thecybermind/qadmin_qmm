@@ -25,7 +25,6 @@ Created By:
 #include "vote.h"
 #include "util.h"
 
-plugin_res* g_result = nullptr;
 plugin_info g_plugininfo = {
 	QMM_PIFV_MAJOR,									// plugin interface version major
 	QMM_PIFV_MINOR,									// plugin interface version minor
@@ -37,7 +36,9 @@ plugin_info g_plugininfo = {
 	"QADMIN",										// logtag of plugin
 };
 eng_syscall g_syscall = nullptr;
+eng_syscall_args g_syscall_args = nullptr;
 mod_vmMain g_vmMain = nullptr;
+mod_vmMain_args g_vmMain_args = nullptr;
 plugin_funcs* g_pluginfuncs = nullptr;
 plugin_vars* g_pluginvars = nullptr;
 
@@ -66,7 +67,7 @@ C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
 
 
 // second function called, save pointers
-C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, mod_vmMain modfunc, plugin_res* presult, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
+C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, eng_syscall_args engfunc_args, mod_vmMain modfunc, mod_vmMain_args modfunc_args, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
 	QMM_SAVE_VARS();
 
 	return 1;
@@ -79,7 +80,7 @@ C_DLLEXPORT void QMM_Detach() {
 
 
 // called before mod's vmMain (engine->mod)
-C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
 	// clear client info on disconnection
 	if (cmd == GAME_CLIENT_DISCONNECT) {
 		intptr_t clientnum = args[0];
@@ -97,7 +98,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		// ent->s.number is not set until CLIENT_BEGIN, so calculate based on edict_t*
 		clientnum = NUM_FROM_ENT(clientnum) - 1;
 #endif
-		return handlecommand(clientnum, parse_args(0));
+		return handlecommand(results, clientnum, parse_args(0));
 	}
 	// allow admin commands from console with "admin_cmd" or "a_c" commands
 	else if (cmd == GAME_CONSOLE_COMMAND) {
@@ -112,13 +113,13 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 			QMM_ARGV(firstarg, command, sizeof(command));
 		}
 		if (str_striequal(command, "admin_cmd") || str_striequal(command, "a_c"))
-			return handlecommand(SERVER_CONSOLE, parse_args(1 + firstarg));
+			return handlecommand(results, SERVER_CONSOLE, parse_args(1 + firstarg));
 		else if (str_striequal(command, "admin_adduser_ip"))
-			return admin_adduser(au_ip, parse_args(0 + firstarg));
+			return admin_adduser(results, au_ip, parse_args(0 + firstarg));
 		else if (str_striequal(command, "admin_adduser_name"))
-			return admin_adduser(au_name, parse_args(0 + firstarg));
+			return admin_adduser(results, au_name, parse_args(0 + firstarg));
 		else if (str_striequal(command, "admin_adduser_id"))
-			return admin_adduser(au_id, parse_args(0 + firstarg));
+			return admin_adduser(results, au_id, parse_args(0 + firstarg));
 	}
 	else if (cmd == GAME_INIT) {
 		QMM_WRITEQMMLOG(QMMLOG_INFO, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n");
@@ -148,7 +149,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 
 // called after mod's vmMain (engine->mod)
-C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
 	// save client data on connection
 	// (this is here in _Post so that the game has a chance to do various info checking before we get the values)
 	if (cmd == GAME_CLIENT_CONNECT || cmd == GAME_CLIENT_USERINFO_CHANGED) {
@@ -193,13 +194,13 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 
 
 // called before engine's syscall (mod->engine)
-C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
 
 	QMM_RET_IGNORED(0);
 }
 
 
 // called after engine's syscall (mod->engine)
-C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(0);
 }

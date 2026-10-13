@@ -16,19 +16,23 @@ Created By:
     #include <cod11mp/bgame/bg_local.h>
     #include <cod11mp/bgame/bg_public.h>
     #include <cod11mp/game/g_public.h>
-    #define GAME_NO_NAME_COLOR
+    #include <game_cod11mp.h>
+#define GAME_NO_NAME_COLOR
 #elif defined(GAME_CODMP)
     #include <codmp/bgame/bg_local.h>
     #include <codmp/bgame/bg_public.h>
     #include <codmp/game/g_public.h>
-    #define GAME_NO_NAME_COLOR
+    #include <game_codmp.h>
+#define GAME_NO_NAME_COLOR
 #elif defined(GAME_CODUOMP)
     #include <coduomp/bgame/bg_local.h>
     #include <coduomp/bgame/bg_public.h>
     #include <coduomp/game/g_public.h>
-    #define GAME_NO_NAME_COLOR
+    #include <game_coduomp.h>
+#define GAME_NO_NAME_COLOR
 #elif defined(GAME_JAMP)
     #include <jamp/game/g_local.h>
+    #include <game_jamp.h>
 #elif defined(GAME_JASP)
     #include <jasp/game/q_shared.h>
     #include <jasp/game/g_local.h>
@@ -36,6 +40,7 @@ Created By:
     #include <game_jasp.h>
 #elif defined(GAME_JK2MP)
     #include <jk2mp/game/g_local.h>
+    #include <game_jk2mp.h>
 #elif defined(GAME_JK2SP)
     #include <jk2sp/game/q_shared.h>
     #include <jk2sp/game/g_local.h>
@@ -72,10 +77,13 @@ Created By:
     #define GAME_NO_FS_GETFILELIST
 #elif defined(GAME_Q3A)
     #include <q3a/game/g_local.h>
+    #include <game_q3a.h>
 #elif defined(GAME_RTCWMP)
     #include <rtcwmp/game/g_local.h>
+    #include <game_rtcwmp.h>
 #elif defined(GAME_RTCWSP)
     #include <rtcwsp/game/g_local.h>
+    #include <game_rtcwsp.h>
 #elif defined(GAME_SIN)
     #include <sin/game/g_local.h>
     #include <game_sin.h>
@@ -83,14 +91,23 @@ Created By:
     #define GAME_CLIENT_ENT_PTRS
     #define GAME_NO_SEND_SERVER_COMMAND
     #define GAME_NO_FS_GETFILELIST
+#elif defined(GAME_SOF)
+    #include <sof/gamecpp/g_local.h>
+    #include <game_sof.h>
+    #define GAME_NO_NAME_COLOR
+    #define GAME_CLIENT_ENT_PTRS
+    #define GAME_NO_SEND_SERVER_COMMAND
+    #define GAME_NO_FS_GETFILELIST
 #elif defined(GAME_SOF2MP)
     #include <sof2mp/game/g_local.h>
+    #include <game_sof2mp.h>
 #elif defined(GAME_STEF2)
     #include <stef2/game/g_local.h>
     #include <stef2/game/bg_public.h>
     #include <game_stef2.h>
 #elif defined(GAME_STVOYHM)
     #include <stvoyhm/game/g_local.h>
+    #include <game_stvoyhm.h>
 #elif defined(GAME_STVOYSP)
     #include <stvoysp/game/q_shared.h>
     #include <stvoysp/game/g_local.h>
@@ -98,6 +115,7 @@ Created By:
     #include <game_stvoysp.h>
 #elif defined(GAME_WET)
     #include <wet/game/g_local.h>
+    #include <game_wet.h>
 #endif
 
 #endif // QADMIN_QMM_GAME_H
