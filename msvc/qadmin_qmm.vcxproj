@@ -61,6 +61,10 @@
       <Configuration>Debug-SIN</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-SOF|Win32">
+      <Configuration>Debug-SOF</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-SOF2MP|Win32">
       <Configuration>Debug-SOF2MP</Configuration>
       <Platform>Win32</Platform>
@@ -145,6 +149,10 @@
       <Configuration>Debug-SIN</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-SOF|x64">
+      <Configuration>Debug-SOF</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-SOF2MP|x64">
       <Configuration>Debug-SOF2MP</Configuration>
       <Platform>x64</Platform>
@@ -223,6 +231,10 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SIN|Win32">
       <Configuration>Release-SIN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-SOF|Win32">
+      <Configuration>Release-SOF</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SOF2MP|Win32">
@@ -307,6 +319,10 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SIN|x64">
       <Configuration>Release-SIN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-SOF|x64">
+      <Configuration>Release-SOF</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-SOF2MP|x64">
@@ -430,6 +446,9 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SIN'))==true">
     <TargetName>$(ProjectName)_SIN</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF'))==true">
+    <TargetName>$(ProjectName)_SOF</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF2MP'))==true">
     <TargetName>$(ProjectName)_SOF2MP</TargetName>
   </PropertyGroup>
@@ -493,6 +512,9 @@
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SIN'))==true">
     <TargetName>$(ProjectName)_x86_64_SIN</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF'))==true">
+    <TargetName>$(ProjectName)_x86_64_SOF</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF2MP'))==true">
     <TargetName>$(ProjectName)_x86_64_SOF2MP</TargetName>
   </PropertyGroup>
@@ -549,107 +571,112 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-COD11MP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_COD11MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_COD11MP;GAME_STR="COD11MP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-CODMP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODMP;GAME_STR="CODMP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-CODUOMP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODUOMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_CODUOMP;GAME_STR="CODUOMP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JAMP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JAMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JAMP;GAME_STR="JAMP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JASP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JASP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JASP;GAME_STR="JASP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JK2MP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2MP;GAME_STR="JK2MP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-JK2SP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2SP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_JK2SP;GAME_STR="JK2SP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHAA'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHAA</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHAA;GAME_STR="MOHAA"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHBT'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHBT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHBT;GAME_STR="MOHBT"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHSH'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHSH</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHSH;GAME_STR="MOHSH"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q2R'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R;GAME_STR="Q2R"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q3A'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q3A</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q3A;GAME_STR="Q3A"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-QUAKE2'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2;GAME_STR="QUAKE2"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-RTCWMP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWMP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWMP;GAME_STR="RTCWMP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-RTCWSP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWSP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_RTCWSP;GAME_STR="RTCWSP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SIN'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SIN</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SIN;GAME_STR="SIN"</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF;GAME_STR="SOF"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF2MP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF2MP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF2MP;GAME_STR="SOF2MP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STEF2'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STEF2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STEF2;GAME_STR="STEF2"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STVOYHM'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYHM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYHM;GAME_STR="STVOYHM"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-STVOYSP'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYSP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_STVOYSP;GAME_STR="STVOYSP"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-WET'))==true">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_WET</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_WET;GAME_STR="WET"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

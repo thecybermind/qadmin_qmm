@@ -6,7 +6,7 @@
 
 BIN_32 := qadmin_qmm
 BIN_64 := qadmin_qmm_x86_64
-GAMES := COD11MP CODMP CODUOMP JAMP JASP JK2MP JK2SP MOHAA MOHBT MOHSH Q3A QUAKE2 RTCWMP RTCWSP SIN SOF2MP STEF2 STVOYHM STVOYSP WET
+GAMES := COD11MP CODMP CODUOMP JAMP JASP JK2MP JK2SP MOHAA MOHBT MOHSH Q3A QUAKE2 RTCWMP RTCWSP SIN SOF SOF2MP STEF2 STVOYHM STVOYSP WET
 
 CC := g++
 
@@ -26,8 +26,8 @@ LDLIBS   :=
 REL_CPPFLAGS := $(CPPFLAGS) -DNDEBUG
 DBG_CPPFLAGS := $(CPPFLAGS) -D_DEBUG
 
-REL_CFLAGS_32 := $(CFLAGS) -m32 -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
-REL_CFLAGS_64 := $(CFLAGS) -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
+REL_CFLAGS_32 := $(CFLAGS) -m32 -O2 -falign-functions=16 -fno-strict-aliasing -fstrength-reduce 
+REL_CFLAGS_64 := $(CFLAGS) -O2 -falign-functions=16 -fno-strict-aliasing -fstrength-reduce 
 DBG_CFLAGS_32 := $(CFLAGS) -m32 -g -pg
 DBG_CFLAGS_64 := $(CFLAGS) -g -pg
 
@@ -90,19 +90,19 @@ $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so: $$(addprefix $(OBJ_DIR)/debug-$(
 
 $(OBJ_DIR)/release-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) $(REL_CFLAGS_32) -c $$< -o $$@
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_32) -c $$< -o $$@
 
 $(OBJ_DIR)/release-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) $(REL_CFLAGS_64) -c $$< -o $$@
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_64) -c $$< -o $$@
 
 $(OBJ_DIR)/debug-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) $(DBG_CFLAGS_32) -c $$< -o $$@
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_32) -c $$< -o $$@
 
 $(OBJ_DIR)/debug-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) $(DBG_CFLAGS_64) -c $$< -o $$@
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_64) -c $$< -o $$@
 
 -include $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES:.o=.d))
 -include $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
