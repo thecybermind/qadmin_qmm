@@ -1,5 +1,5 @@
 /*
-QADMIN_QMM - Server Administration Plugin
+QAdmin - Server Administration Plugin
 Copyright 2004-2026
 https://github.com/thecybermind/qadmin_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
@@ -19,21 +19,21 @@ Created By:
 #define QADMIN_QMM_VERSION_MINOR	7
 #define QADMIN_QMM_VERSION_REV		0
 
-#define QADMIN_QMM_VERSION		STRINGIFY(QADMIN_QMM_VERSION_MAJOR) "." STRINGIFY(QADMIN_QMM_VERSION_MINOR) "." STRINGIFY(QADMIN_QMM_VERSION_REV)
+#define QADMIN_QMM_VERSION          STRINGIFY(QADMIN_QMM_VERSION_MAJOR) "." STRINGIFY(QADMIN_QMM_VERSION_MINOR) "." STRINGIFY(QADMIN_QMM_VERSION_REV)
 
 #if defined(_WIN32)
-#define QADMIN_QMM_OS             "Windows"
+#define QADMIN_QMM_OS               "Windows"
 #ifdef _WIN64
-#define QADMIN_QMM_ARCH           "x86_64"
+#define QADMIN_QMM_ARCH             "x86_64"
 #else
-#define QADMIN_QMM_ARCH           "x86"
+#define QADMIN_QMM_ARCH             "x86"
 #endif
 #elif defined(__linux__)
-#define QADMIN_QMM_OS             "Linux"
+#define QADMIN_QMM_OS               "Linux"
 #ifdef __LP64__
-#define QADMIN_QMM_ARCH           "x86_64"
+#define QADMIN_QMM_ARCH             "x86_64"
 #else
-#define QADMIN_QMM_ARCH           "x86"
+#define QADMIN_QMM_ARCH             "x86"
 #endif
 #endif
 
