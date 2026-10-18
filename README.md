@@ -1,10 +1,10 @@
 # QAdmin
-QAdmin - Server Administration Plugin
+QAdmin - Server Administration Plugin  
 Copyright 2004-2026  
-https://github.com/thecybermind/qadmin_qmm/
+https://github.com/thecybermind/qadmin_qmm/  
 3-clause BSD license: https://opensource.org/license/bsd-3-clause  
-
-Created By: Kevin Masterson < k.m.masterson@gmail.com >
+  
+Created By: Kevin Masterson < k.m.masterson@gmail.com >  
 
 ---
 
