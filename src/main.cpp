@@ -35,12 +35,8 @@ plugin_info g_plugininfo = {
 	"https://github.com/thecybermind/qadmin_qmm/",	// website of plugin
 	"QADMIN",										// logtag of plugin
 };
-eng_syscall g_syscall = nullptr;
-eng_syscall_args g_syscall_args = nullptr;
-mod_vmMain g_vmMain = nullptr;
-mod_vmMain_args g_vmMain_args = nullptr;
-plugin_funcs* g_pluginfuncs = nullptr;
-plugin_vars* g_pluginvars = nullptr;
+plugin_funcs g_pluginfuncs;
+plugin_vars g_pluginvars;
 
 // store the game's entity and client info
 gentity_t* g_gents = nullptr;
@@ -60,21 +56,16 @@ time_t g_leveltime;
 std::vector<std::string> g_gaggedCmds;
 
 
-// first function called in plugin, give QMM the plugin info
-C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
-	QMM_GIVE_PINFO();
+C_DLLEXPORT void QMM_Query(plugin_info** plugininfo, plugin_funcs** pluginfuncs, plugin_vars** pluginvars) {
+	QMM_GIVE_PTRS();
 }
 
 
-// second function called, save pointers
-C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, eng_syscall_args engfunc_args, mod_vmMain modfunc, mod_vmMain_args modfunc_args, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
-	QMM_SAVE_VARS();
-
+C_DLLEXPORT int QMM_Attach() {
 	return 1;
 }
 
 
-// last function called, clean up stuff allocated in QMM_Attach
 C_DLLEXPORT void QMM_Detach() {
 }
 
@@ -125,14 +116,14 @@ C_DLLEXPORT intptr_t QMM_vmMain(result_vars* results, intptr_t cmd, intptr_t* ar
 		QMM_WRITEQMMLOG(QMMLOG_INFO, "QAdmin v" QADMIN_QMM_VERSION " by " QADMIN_QMM_BUILDER " is loaded\n");
 
 		// make version cvar
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_version", QADMIN_QMM_VERSION, CVAR_SERVERINFO | CVAR_ROM);
 
 		// other cvars
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_kick_time", "30", CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_vote_map_time", "60", CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, nullptr, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_default_access", "1", CVAR_ARCHIVE);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_vote_kick_time", "30", CVAR_ARCHIVE);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_vote_map_time", "60", CVAR_ARCHIVE);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_config_file", "qmmaddons/qadmin/config/qadmin.cfg", CVAR_ARCHIVE);
+		QMM_SYSCALL(G_CVAR_REGISTER, nullptr, "admin_gagged_cmds", "say_team,tell,vsay,vsay_team,vtell,vosay,vosay_team,votell,vtaunt", CVAR_ARCHIVE);
 
 		time(&g_mapstart);
 		time(&g_leveltime);
@@ -160,7 +151,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(result_vars* results, intptr_t cmd, intptr_
 		char* userinfo = (char*)args[1];
 #else
 		char userinfo[MAX_INFO_STRING];
-		g_syscall(G_GET_USERINFO, clientnum, userinfo, sizeof(userinfo));
+		QMM_SYSCALL(G_GET_USERINFO, clientnum, userinfo, sizeof(userinfo));
 #endif
 
 		// if playerinfo is missing, make a new one
@@ -183,7 +174,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(result_vars* results, intptr_t cmd, intptr_
 	}
 	// handle the game initialization (dependent on mod being loaded)
 	else if (cmd == GAME_INIT) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
+		QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s.cfg\n", QMM_GETSTRCVAR("mapname")));
 		// g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, "exec banned_guids.cfg\n");
 		
 		reload();

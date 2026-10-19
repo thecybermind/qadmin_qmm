@@ -40,28 +40,28 @@ bool player_has_access(intptr_t clientnum, int reqaccess) {
 
 void player_clientprint(intptr_t clientnum, const char* msg, bool chat) {
 	if (clientnum == SERVER_CONSOLE) {
-		g_syscall(G_PRINT, msg);
+		QMM_SYSCALL(G_PRINT, msg);
 		return;
 	}
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 	if (clientnum == -1) {
 		for (auto& p : g_playerinfo) {
-			g_syscall(G_CPRINTF, p.first, PRINT_HIGH, "%s", msg);
+			QMM_SYSCALL(G_CPRINTF, p.first, PRINT_HIGH, "%s", msg);
 		}
 		return;
 	}
-	g_syscall(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
+	QMM_SYSCALL(G_CPRINTF, clientnum, PRINT_HIGH, "%s", msg);
 #else
 	if (chat)
-		g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("chat \"%s\"", msg));
+		QMM_SYSCALL(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("chat \"%s\"", msg));
 	else
-		g_syscall(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"%s\"", msg));
+		QMM_SYSCALL(G_SEND_SERVER_COMMAND, clientnum, QMM_VARARGS("print \"%s\"", msg));
 #endif
 }
 
 
 void player_kick(intptr_t clientnum, std::string message) {
-	g_syscall(G_DROP_CLIENT, clientnum, message.c_str());
+	QMM_SYSCALL(G_DROP_CLIENT, clientnum, message.c_str());
 }
 
 
@@ -128,12 +128,12 @@ bool is_valid_map(std::string map) {
 
 	fileHandle_t fmap;
 
-	intptr_t mapsize = (int)g_syscall(G_FS_FOPEN_FILE, QMM_VARARGS("maps/%s.bsp", map.c_str()), &fmap, FS_READ);
+	intptr_t mapsize = (int)QMM_SYSCALL(G_FS_FOPEN_FILE, QMM_VARARGS("maps/%s.bsp", map.c_str()), &fmap, FS_READ);
 	// doesn't exist, return immediately
 	if (mapsize < 0)
 		return false;
 	// if file was 0 bytes, we still need to close, but return false
-	g_syscall(G_FS_FCLOSE_FILE, fmap);
+	QMM_SYSCALL(G_FS_FCLOSE_FILE, fmap);
 	return mapsize ? true : false;
 }
 
@@ -192,7 +192,7 @@ std::vector<std::string> parse_str(std::string str, char sep) {
 // append all args to a single string, separated by spaces
 // this is done so say commands which have the entire text in arg1 will still parse correctly
 std::vector<std::string> parse_args(int start) {
-	int end = (int)g_syscall(G_ARGC) - 1;
+	int end = (int)QMM_SYSCALL(G_ARGC) - 1;
 
 	char temp[MAX_STRING_LENGTH];
 	std::string s;

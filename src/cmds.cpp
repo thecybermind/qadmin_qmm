@@ -29,7 +29,7 @@ void reload() {
 	g_userinfo.clear();
 
 	// re-exec the config file
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s\n", QMM_GETSTRCVAR("admin_config_file")));
+	QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec %s\n", QMM_GETSTRCVAR("admin_config_file")));
 
 	// refresh gagged command list
 	g_gaggedCmds = parse_str(QMM_GETSTRCVAR("admin_gagged_cmds"), ',');
@@ -77,7 +77,7 @@ int handlecommand(result_vars* results, intptr_t clientnum, std::vector<std::str
 			if (player_has_access(clientnum, admincmd.reqaccess)) {
 				// only run handler func if we provided enough args
 				// otherwise, show the help entry
-				if (g_syscall(G_ARGC) < (admincmd.minargs + 1)) {
+				if (QMM_SYSCALL(G_ARGC) < (admincmd.minargs + 1)) {
 					player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Missing parameters, usage:\n[QADMIN] %s\n", admincmd.usage));
 					QMM_RET_SUPERCEDE(1);
 				}
@@ -217,7 +217,7 @@ int admin_ban(result_vars* results, intptr_t clientnum, int access, std::vector<
 
 	// if no users with immunity have the IP, ban the IP and kick the user
 	if (!immunity) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", g_playerinfo[targetclient].ip.c_str(), message.c_str()));
+		QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", g_playerinfo[targetclient].ip.c_str(), message.c_str()));
 		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Banned %s by IP (%s): '%s'\n", g_playerinfo[targetclient].name.c_str(), g_playerinfo[targetclient].ip.c_str(), message.c_str()));
 		player_kick(targetclient, message);
 	}
@@ -259,7 +259,7 @@ int admin_banip(result_vars* results, intptr_t clientnum, int access, std::vecto
 
 	// if no users with immunity have the IP, ban the IP
 	if (!immunity) {
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", user.c_str(), message.c_str()));
+		QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("addip \"%s\" \"%s\"\n", user.c_str(), message.c_str()));
 		player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Banned IP %s: '%s'\n", user.c_str(), message.c_str()));
 	}		
 	// else at least 1 user with immunity has the given IP
@@ -278,7 +278,7 @@ int admin_banip(result_vars* results, intptr_t clientnum, int access, std::vecto
 int admin_unban(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string ip = str_sanitize(args[1]);
 
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("removeip \"%s\"\n", ip.c_str()));
+	QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("removeip \"%s\"\n", ip.c_str()));
 	player_clientprint(clientnum, QMM_VARARGS("[QADMIN] Unbanned IP %s\n", ip.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
@@ -288,7 +288,7 @@ int admin_unban(result_vars* results, intptr_t clientnum, int access, std::vecto
 int admin_cfg(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string file = str_sanitize(args[1]);
 
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec \"%s\"\n", file.c_str()));
+	QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("exec \"%s\"\n", file.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -296,35 +296,35 @@ int admin_cfg(result_vars* results, intptr_t clientnum, int access, std::vector<
 
 int admin_rcon(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string str = str_join(args, 1);
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("%s\n", str.c_str()));
+	QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("%s\n", str.c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_hostname(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "sv_hostname", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "sv_hostname", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_friendlyfire(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "g_friendlyfire", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "g_friendlyfire", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_gravity(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "g_gravity", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "g_gravity", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_gametype(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "g_gametype", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "g_gametype", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -332,21 +332,21 @@ int admin_gametype(result_vars* results, intptr_t clientnum, int access, std::ve
 
 int admin_map(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	std::string map = str_sanitize(args[1]);
-	g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", args[1].c_str()));
+	QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", args[1].c_str()));
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_fraglimit(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "fraglimit", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "fraglimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
 
 
 int admin_timelimit(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	g_syscall(G_CVAR_SET, "timelimit", args[1].c_str());
+	QMM_SYSCALL(G_CVAR_SET, "timelimit", args[1].c_str());
 
 	QMM_RET_SUPERCEDE(1);
 }
@@ -354,11 +354,11 @@ int admin_timelimit(result_vars* results, intptr_t clientnum, int access, std::v
 
 int admin_pass(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	if (str_striequal(args[0], "admin_pass")) {
-		g_syscall(G_CVAR_SET, "g_password", args[1].c_str());
-		g_syscall(G_CVAR_SET, "g_needpass", "1");
+		QMM_SYSCALL(G_CVAR_SET, "g_password", args[1].c_str());
+		QMM_SYSCALL(G_CVAR_SET, "g_needpass", "1");
 	} else if (str_striequal(args[0], "admin_nopass")) {
-		g_syscall(G_CVAR_SET, "g_password", "");
-		g_syscall(G_CVAR_SET, "g_needpass", "0");
+		QMM_SYSCALL(G_CVAR_SET, "g_password", "");
+		QMM_SYSCALL(G_CVAR_SET, "g_needpass", "0");
 	}
 
 	QMM_RET_SUPERCEDE(1);
@@ -381,7 +381,7 @@ int admin_csay(result_vars* results, intptr_t clientnum, int access, std::vector
 #ifdef GAME_NO_SEND_SERVER_COMMAND
 	player_clientprint(-1, message.c_str(), false);
 #else
-	g_syscall(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS("cp \"%s\n\"", message.c_str()));
+	QMM_SYSCALL(G_SEND_SERVER_COMMAND, -1, QMM_VARARGS("cp \"%s\n\"", message.c_str()));
 #endif
 
 	QMM_RET_SUPERCEDE(1);
@@ -425,7 +425,7 @@ int admin_psay(result_vars* results, intptr_t clientnum, int access, std::vector
 int admin_listmaps(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
 	char dirlist[MAX_STRING_LENGTH];
 
-	int numfiles = (int)g_syscall(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
+	int numfiles = (int)QMM_SYSCALL(G_FS_GETFILELIST, "maps", ".bsp", dirlist, sizeof(dirlist));
 	dirlist[sizeof(dirlist) - 1] = '\0';
 	char* dirptr = dirlist;
 
@@ -591,7 +591,7 @@ int admin_currentmap(result_vars* results, intptr_t clientnum, int access, std::
 
 
 int admin_timeleft(result_vars* results, intptr_t clientnum, int access, std::vector<std::string> args, bool say) {
-	intptr_t timelimit = g_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, "timelimit");
+	intptr_t timelimit = QMM_SYSCALL(G_CVAR_VARIABLE_INTEGER_VALUE, "timelimit");
 	if (!timelimit) {
 		player_clientprint(say ? -1 : clientnum, "[QADMIN] There is no time limit.\n");
 		QMM_RETURN(say ? QMM_IGNORED : QMM_SUPERCEDE, 1);
@@ -611,7 +611,7 @@ void handle_vote_map(intptr_t winner, int winvotes, int totalvotes, void* param)
 	std::string map = *(std::string*)param;
 	if (winner == 1) {
 		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to change map to %s was successful\n", map.c_str()));
-		g_syscall(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", map.c_str()));
+		QMM_SYSCALL(G_SEND_CONSOLE_COMMAND, EXEC_APPEND, QMM_VARARGS("map \"%s\"\n", map.c_str()));
 	} else {
 		player_clientprint(-1, QMM_VARARGS("[QADMIN] Vote to change map to %s has failed\n", map.c_str()));
 	}
